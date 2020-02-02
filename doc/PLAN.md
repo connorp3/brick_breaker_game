@@ -1,6 +1,7 @@
 # Game Plan
 ## NAMEs
-
+Connor Penny
+John Taylor
 
 ### Breakout Variant
 
