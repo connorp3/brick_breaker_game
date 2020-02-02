@@ -11,11 +11,11 @@ public class Main extends Application {
      * Start of the program.
      */
     public static void main (String[] args) {
-        System.out.println("Hello world");
+        Application.launch();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        primaryStage.show();
     }
 }
