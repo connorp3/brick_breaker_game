@@ -17,26 +17,20 @@ public class Paddle {
     public Paddle() {
         paddle = new Rectangle(X_POS, Y_POS, WIDTH, HEIGHT);
         paddle.setFill(Color.RED);
-        paddle.addEventHandler(KeyEvent.KEY_TYPED, setKeyInputs());
 
-    }
 
-    private EventHandler<KeyEvent> setKeyInputs() {
-        EventHandler<KeyEvent> paddleMove = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.RIGHT) {
-                    paddle.setX(paddle.getX() + 5);
-                } else if (event.getCode() == KeyCode.LEFT) {
-                    paddle.setX(paddle.getX() - 5);
-                }
-            }
-        };
-        return paddleMove;
     }
 
     public Rectangle getShape() {
         return paddle;
+    }
+
+    public void moveRight() {
+        paddle.setX(paddle.getX() + 5);
+    }
+
+    public void moveLeft() {
+        paddle.setX(paddle.getX() - 5);
     }
 
 }
