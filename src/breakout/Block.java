@@ -17,6 +17,7 @@ public class Block {
     public Block (int whichOne, int x, int y, int width, int height) {
         myShape = new Rectangle(x, y, width, height);
         myShape.setFill(Color.AQUAMARINE);
+        myShape.setStroke(Color.BLACK);
         myShape.setId("block_" + whichOne);
     }
 

@@ -16,6 +16,7 @@ public class Paddle extends Rectangle {
         this.setWidth(WIDTH);
         this.setHeight(HEIGHT);
         this.setFill(Color.RED);
+        this.setStroke(Color.BLACK);
         this.setId("paddle");
 
 

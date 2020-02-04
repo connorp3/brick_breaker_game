@@ -73,6 +73,14 @@ public class SceneCreation extends Application {
             myPaddle.moveLeft();
         }
 
+        if (myPaddle.getX() + myPaddle.getWidth() >= scene.getWidth()) {
+            myPaddle.moveLeft();
+        }
+
+        if (myPaddle.getX() <= 0) {
+            myPaddle.moveRight();
+        }
+
         moveR = false;
         moveL = false;
 
@@ -89,7 +97,7 @@ public class SceneCreation extends Application {
         }
 
         if(myBall.passBottomWall(scene)) {
-            myBall.ballReset();
+            myBall.ballReset(myPaddle);
         }
 
         myBall.moveVertical(elapsedTime);

@@ -3,14 +3,16 @@ package breakout;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import java.util.Random;
 
 public class Ball extends Circle {
     private double ballSpeed;
     private double XVel;
     private double YVel;
+    Random rand = new Random();
     private static final double START_X_POS = 275;
     private static final double START_Y_POS = 424;
-    private static final double START_X_VEL = 50;
+    private final double START_X_VEL = rand.nextInt(50 + 50) - 50;
     private static final double START_Y_VEL = -100;
     private static final double RADIUS = 5;
 
@@ -57,10 +59,10 @@ public class Ball extends Circle {
         YVel = -YVel;
     }
 
-    public void ballReset() {
-        this.setCenterX(START_X_POS);
-        this.setCenterY(START_Y_POS);
-        XVel = START_X_VEL;
+    public void ballReset(Paddle myPaddle) {
+        this.setCenterX(myPaddle.getX() + myPaddle.getWidth()/2);
+        this.setCenterY(myPaddle.getY() - this.getRadius());
+        XVel = rand.nextInt(50 + 50) - 50;
         YVel = START_Y_VEL;
     }
 
