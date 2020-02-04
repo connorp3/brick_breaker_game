@@ -23,10 +23,10 @@ public class Paddle extends Rectangle {
         this.setId("paddle");
     }
 
-    public void moveRight() { this.setX(this.getX() + 5); }
+    public void moveRight() { this.setX(this.getX() + 10); }
 
     public void moveLeft() {
-        this.setX(this.getX() - 5);
+        this.setX(this.getX() - 10);
     }
 
 }

@@ -14,7 +14,6 @@ public class SceneCreationTest extends DukeApplicationTest {
     private final SceneCreation mySceneCreation = new SceneCreation();
 
     private Scene myScene;
-
     private Paddle myPaddle;
     private Ball myBall;
 
@@ -34,5 +33,12 @@ public class SceneCreationTest extends DukeApplicationTest {
         assertEquals(430, myPaddle.getY());
         assertEquals(50, myPaddle.getWidth());
         assertEquals(10, myPaddle.getHeight());
+    }
+
+    @Test
+    public void testBallInitialPosition() {
+        assertEquals(275, myBall.getCenterX());
+        assertEquals(424, myBall.getCenterY());
+        assertEquals(5, myBall.getRadius());
     }
 }

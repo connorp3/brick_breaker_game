@@ -28,25 +28,16 @@ public class SceneCreation extends Application {
     private Timeline myAnimation;
     private boolean moveR;
     private boolean moveL;
+    private boolean checkShootBall;
+    private boolean stuckToPaddle;
 
-//    private EventHandler<KeyEvent> keyEventHandler(Paddle paddle) {
-//        EventHandler<KeyEvent> inputEvent = new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent event) {
-//                if (event.getCode() == KeyCode.RIGHT) {
-//                    moveR = true;
-//                } else if (event.getCode() == KeyCode.LEFT) {
-//                    moveL = true;
-//                }
-//            }
-//        };
-//        return inputEvent;
-//    }
     private void handleInput (KeyCode code) {
         if (code == KeyCode.RIGHT) {
             moveR = true;
         } else if (code == KeyCode.LEFT) {
             moveL = true;
+        } else if (code == KeyCode.UP) {
+            checkShootBall = true;
         }
     }
 
@@ -81,12 +72,20 @@ public class SceneCreation extends Application {
 
     public void update(double elapsedTime, Scene scene) {
 
+        stuckToPaddle = myBall.checkStuckToPaddle();
+
         if(moveR) {
             myPaddle.moveRight();
+            if (stuckToPaddle) {
+                myBall.moveRight();
+            }
         }
 
         if(moveL) {
             myPaddle.moveLeft();
+            if (stuckToPaddle) {
+                myBall.moveLeft();
+            }
         }
 
         if (myPaddle.getX() + myPaddle.getWidth() >= scene.getWidth()) {
@@ -116,8 +115,12 @@ public class SceneCreation extends Application {
             myBall.ballReset(myPaddle);
         }
 
+        if (checkShootBall) {
+            myBall.shootBall();
+            myBall.unStick();
+            checkShootBall = false;
+        }
         myBall.moveVertical(elapsedTime);
         myBall.moveLateral(elapsedTime);
-
     }
 }
