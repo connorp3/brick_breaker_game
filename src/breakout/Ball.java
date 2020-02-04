@@ -28,36 +28,42 @@ public class Ball extends Circle {
         this.setId("ball");
     }
 
+    // The default lateral movement for the ball
     public void moveLateral(double elapsedTime) {
         this.setCenterX(this.getCenterX() + XVel * elapsedTime);
     }
 
+    // The default vertical movement for the ball
     public void moveVertical(double elapsedTime) {
         this.setCenterY(this.getCenterY() + YVel * elapsedTime);
     }
 
+    // Allows ball to move in perfect sync with the paddle when the ball should be "stuck" to the paddle
     public void moveRight() { this.setCenterX(this.getCenterX() + 10); }
 
-    public void moveLeft() {
-        this.setCenterX(this.getCenterX() - 10);
-    }
+    // Allows ball to move in perfect sync with the paddle when the ball should be "stuck" to the paddle
+    public void moveLeft() { this.setCenterX(this.getCenterX() - 10); }
 
+    // Returns whether the ball should be "stuck" to the paddle or not. Used by paddle.
     public boolean checkStuckToPaddle() { return stuckToPaddle; }
 
+    // Resets the boolean stuckToPaddle to resume normal gameplay after ball has been shot.
     public void unStick() { this.stuckToPaddle = false; }
 
+    // Returns whether the ball has passed the bottom wall of the window.
     public boolean passBottomWall(Scene scene) {
         return this.getCenterY() >= scene.getHeight();
     }
 
-
+    // Returns whether the ball has collided with the top wall
     public boolean collideWithTopWall() {
-        return this.getCenterY() <= 0;
+        return this.getCenterY() - this.getRadius() <= 0;
     }
 
+    // Returns whether the ball has collided with the side walls
     public boolean collideWithSideWalls(Scene scene) {
-        return this.getCenterX() >= scene.getWidth() ||
-                this.getCenterX() <= 0;
+        return this.getCenterX() + this.getRadius() >= scene.getWidth() ||
+                this.getCenterX() - this.getRadius() <= 0;
     }
 
     public void sideWallCollision() {
@@ -68,11 +74,13 @@ public class Ball extends Circle {
         YVel = -YVel;
     }
 
+    // The method called when the ball is "shot" by the user.
     public void shootBall() {
         XVel = getRandomInRange(-50, 50);
         YVel = START_Y_VEL;
     }
 
+    // Method to reset the ball and "stick" it to the paddle once it has passed the bottom wall.
     public void ballReset(Paddle myPaddle) {
         this.setCenterX(myPaddle.getX() + myPaddle.getWidth()/2);
         this.setCenterY(myPaddle.getY() - this.getRadius() - 1);
@@ -82,6 +90,7 @@ public class Ball extends Circle {
 
     }
 
+    // Used to randomize the direction of the ball
     public int getRandomInRange (int min, int max) {
         return min + rand.nextInt(max - min) + 1;
     }

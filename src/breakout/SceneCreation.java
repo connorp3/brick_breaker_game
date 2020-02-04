@@ -90,10 +90,16 @@ public class SceneCreation extends Application {
 
         if (myPaddle.getX() + myPaddle.getWidth() >= scene.getWidth()) {
             myPaddle.moveLeft();
+            if (stuckToPaddle) {
+                myBall.moveLeft();
+            }
         }
 
         if (myPaddle.getX() <= 0) {
             myPaddle.moveRight();
+            if (stuckToPaddle) {
+                myBall.moveRight();
+            }
         }
 
         moveR = false;
