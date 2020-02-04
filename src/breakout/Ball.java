@@ -25,6 +25,7 @@ public class Ball extends Circle {
         ballSpeed = 100;
         XVel = START_X_VEL;
         YVel = START_Y_VEL;
+        this.setId("ball");
     }
 
     public void moveLateral(double elapsedTime) {
@@ -42,8 +43,6 @@ public class Ball extends Circle {
 
     public boolean collideWithTopWall() {
         return this.getCenterY() <= 0;
-
-
     }
 
     public boolean collideWithSideWalls(Scene scene) {
