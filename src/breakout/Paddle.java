@@ -1,8 +1,5 @@
 package breakout;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -19,6 +16,7 @@ public class Paddle extends Rectangle {
         this.setWidth(WIDTH);
         this.setHeight(HEIGHT);
         this.setFill(Color.RED);
+        this.setId("paddle");
 
 
     }
