@@ -41,4 +41,51 @@ public class SceneCreationTest extends DukeApplicationTest {
         assertEquals(424, myBall.getCenterY());
         assertEquals(5, myBall.getRadius());
     }
+
+    @Test
+    public void testBallMove() {
+        //sleep(1, TimeUnit.SECONDS);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        //sleep(1, TimeUnit.SECONDS);
+        // Tests to see if the ball has moved from its starting position
+        assertTrue(myBall.getCenterX() != 275);
+        assertTrue(myBall.getCenterY() < 424);
+    }
+
+    @Test
+    public void testPaddleMoveRight() {
+        myPaddle.setX(myScene.getWidth() / 2);
+        myPaddle.setY(myScene.getHeight() / 2);
+        //sleep(1, TimeUnit.SECONDS);
+        press(myScene, KeyCode.RIGHT);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        //sleep(1, TimeUnit.SECONDS);
+        assertEquals(myScene.getWidth()/2 + 10, myPaddle.getX());
+        assertEquals(myScene.getHeight()/2, myPaddle.getY());
+    }
+
+    @Test
+    public void testPaddleMoveLeft() {
+        myPaddle.setX(myScene.getWidth() / 2);
+        myPaddle.setY(myScene.getHeight() / 2);
+        //sleep(1, TimeUnit.SECONDS);
+        press(myScene, KeyCode.LEFT);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        //sleep(1, TimeUnit.SECONDS);
+        assertEquals(myScene.getWidth()/2 - 10, myPaddle.getX());
+        assertEquals(myScene.getHeight()/2, myPaddle.getY());
+    }
+
+    @Test
+    public void testBallReset () {
+        myBall.topWallCollision();
+        myBall.setCenterX(10);
+        myBall.setCenterY(myScene.getHeight() + 1);
+        //sleep(1, TimeUnit.SECONDS);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        //sleep(1, TimeUnit.SECONDS);
+
+        assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
+        assertEquals(myPaddle.getY() - myBall.getRadius() - 1, myBall.getCenterY());
+    }
 }
