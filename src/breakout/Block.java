@@ -1,6 +1,5 @@
 package breakout;
 
-import java.util.Random;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -10,7 +9,7 @@ import javafx.scene.shape.Rectangle;
  * Block will be hit by ball
  */
 
-public class Block {
+public class Block extends Rectangle {
 
     private Rectangle myShape;
 

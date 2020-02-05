@@ -1,5 +1,6 @@
 package breakout;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -38,6 +39,17 @@ public class SceneCreation extends Application {
             moveL = true;
         } else if (code == KeyCode.UP) {
             checkShootBall = true;
+        } else if (code == KeyCode.R) {
+            myBall.ballReset(myPaddle);
+        }
+        // pause/restart animation
+        if (code == KeyCode.SPACE) {
+            if (myAnimation.getStatus() == Animation.Status.RUNNING) {
+                myAnimation.pause();
+            }
+            else {
+                myAnimation.play();
+            }
         }
     }
 
