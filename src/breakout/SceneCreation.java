@@ -13,9 +13,14 @@ import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class SceneCreation extends Application {
-    public static final int FRAMES_PER_SECOND = 60;
-    public static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
+    private static final int FRAMES_PER_SECOND = 60;
+    private static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
+    private static final int BLOCK_GAP =
     private Paddle myPaddle;
     private Ball myBall;
     private Scene myScene;
@@ -43,10 +48,11 @@ public class SceneCreation extends Application {
         myScene = scene;
 
         scene.setOnKeyPressed(keyEventHandler(myPaddle));
-        SceneCreation sceneCreation = new SceneCreation();
         primaryStage.setTitle("Breakout");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
 
 
         Timeline myAnimation = new Timeline();
@@ -56,12 +62,22 @@ public class SceneCreation extends Application {
         myAnimation.play();
     }
 
-    public void initializeLevel(int level) {
+    public void initializeLevel(int level) throws FileNotFoundException {
         myPaddle = new Paddle();
         myBall = new Ball();
         myRoot = new Group(myPaddle);
         ObservableList gameElements = myRoot.getChildren();
         gameElements.add(myBall);
+        File levelFile = new File("C:\\Users\\conno\\Documents\\CS307\\game_team13" + "\\" + "level");
+        Scanner input = new Scanner(levelFile);
+        while (input.hasNextLine()) {
+            String[] blockList = input.nextLine().split(" ");
+            for(String block : blockList) {
+                if (block.equals("1")) {
+                    Block newBlock = Block(1, )
+                }
+            }
+        }
     }
 
     public void update(double elapsedTime, Scene scene) {

@@ -11,11 +11,12 @@ import javafx.scene.shape.Rectangle;
  */
 
 public class Block {
-
+    private static final int WIDTH = 25;
+    private static final int HEIGHT = 10;
     private Rectangle myShape;
 
-    public Block (int whichOne, int x, int y, int width, int height) {
-        myShape = new Rectangle(x, y, width, height);
+    public Block (int whichOne, int x, int y) {
+        myShape = new Rectangle(x, y, WIDTH, HEIGHT);
         myShape.setFill(Color.AQUAMARINE);
         myShape.setId("block_" + whichOne);
     }
