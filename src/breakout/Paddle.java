@@ -7,8 +7,8 @@ import javafx.scene.shape.Rectangle;
 public class Paddle extends Rectangle {
     private static final int X_POS = 250;
     private static final int Y_POS = 430;
-    private static final int WIDTH = 50;
-    private static final int HEIGHT = 10;
+    private static final int WIDTH = 60;
+    private static final int HEIGHT = 5;
 
     //Need to discuss "this" vs "myPaddle"
 
