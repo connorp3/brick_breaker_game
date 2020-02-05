@@ -24,13 +24,13 @@ public class SceneCreation extends Application {
     private Paddle myPaddle;
     private Ball myBall;
     private Scene myScene;
-//    private Group myRoot;
     private Timeline myAnimation;
     private boolean moveR;
     private boolean moveL;
     private boolean checkShootBall;
     private boolean stuckToPaddle;
 
+    // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
         if (code == KeyCode.RIGHT) {
             moveR = true;
@@ -57,6 +57,7 @@ public class SceneCreation extends Application {
         myAnimation.play();
     }
 
+    // Creates the scene to be put on the stage
     Scene createScene (int width, int height, Paint background) {
         Group root = new Group();
 
@@ -70,10 +71,11 @@ public class SceneCreation extends Application {
         return myScene;
     }
 
+    // Game loop
     public void update(double elapsedTime, Scene scene) {
-
         stuckToPaddle = myBall.checkStuckToPaddle();
 
+        // Move the paddle to the right if necessary. Also moves ball if it is stuck to the paddle.
         if(moveR) {
             myPaddle.moveRight();
             if (stuckToPaddle) {
@@ -81,6 +83,7 @@ public class SceneCreation extends Application {
             }
         }
 
+        // Move the paddle to the left if necessary. Also moves ball if it is stuck to the paddle.
         if(moveL) {
             myPaddle.moveLeft();
             if (stuckToPaddle) {
@@ -88,6 +91,7 @@ public class SceneCreation extends Application {
             }
         }
 
+        // Stops paddle at right side of the window
         if (myPaddle.getX() + myPaddle.getWidth() >= scene.getWidth()) {
             myPaddle.moveLeft();
             if (stuckToPaddle) {
@@ -95,6 +99,7 @@ public class SceneCreation extends Application {
             }
         }
 
+        // Stops paddle at the left side of the window
         if (myPaddle.getX() <= 0) {
             myPaddle.moveRight();
             if (stuckToPaddle) {
@@ -102,30 +107,38 @@ public class SceneCreation extends Application {
             }
         }
 
+        // Resets the boolean variables for paddle movement
         moveR = false;
         moveL = false;
 
+        // Makes the ball bounce when it reaches the top of the window
         if(myBall.collideWithTopWall()) {
             myBall.topWallCollision();
         }
 
+        // Makes the ball bounce when it collides with a wall
         if(myBall.collideWithSideWalls(scene)) {
             myBall.sideWallCollision();
         }
 
+        // Bounces the ball once it hits the paddle
         if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
             myBall.topWallCollision();
         }
 
+        // Calls method to reset the ball once it goes out of the bottom of the screen
         if(myBall.passBottomWall(scene)) {
             myBall.ballReset(myPaddle);
         }
 
+        // Shoots ball and returns ball to normal movement.
         if (checkShootBall) {
             myBall.shootBall();
             myBall.unStick();
             checkShootBall = false;
         }
+
+        // Normal ball movement calls
         myBall.moveVertical(elapsedTime);
         myBall.moveLateral(elapsedTime);
     }
