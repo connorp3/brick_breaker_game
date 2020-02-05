@@ -92,13 +92,15 @@ public class SceneCreation extends Application {
         Scanner input = new Scanner(levelFile);
 
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
+        int blockNum = 1;
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
                 if (block.equals("1")) {
-                    Block newBlock = new Block(1, xPosNextBlock, yPosNextBlock);
+                    Block newBlock = new Block(blockNum, xPosNextBlock, yPosNextBlock);
                     gameElements.add(newBlock.getShape());
+                    blockNum++;
                 }
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
             }
@@ -123,6 +125,7 @@ public class SceneCreation extends Application {
 
     // Game loop
     public void update(double elapsedTime, Scene scene) {
+
         stuckToPaddle = myBall.checkStuckToPaddle();
 
         // Move the paddle to the right. Also moves ball if it is stuck to the paddle.
