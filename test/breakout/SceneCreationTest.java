@@ -1,5 +1,6 @@
 package breakout;
 
+import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -18,7 +19,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     private Ball myBall;
 
     @Override
-    public void start (Stage stage) {
+    public void start (Stage stage) throws FileNotFoundException {
         myScene = mySceneCreation.createScene(SceneCreation.SCENE_WIDTH, SceneCreation.SCENE_HEIGHT, Color.BEIGE);
         stage.setScene(myScene);
         stage.show();

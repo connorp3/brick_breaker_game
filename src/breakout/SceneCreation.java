@@ -22,13 +22,19 @@ import java.util.Scanner;
 
 public class SceneCreation extends Application {
 
-    private static final int BLOCK_GAP =
-    public static final int FRAMES_PER_SECOND = 60;
+    private static final int X_BLOCK_GAP = 2;
+    private static final int Y_BLOCK_GAP = 2;
+    private static final int STARTING_Y_BLOCK_POS = 50;
+    private static final int STARTING_X_BLOCK_POS = 6;
+    private static final int BLOCK_HEIGHT = 20;
+    private static final int BLOCK_WIDTH = 25;
+    private static final int FRAMES_PER_SECOND = 60;
     public static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
     public static final int SCENE_WIDTH = 550;
     public static final int SCENE_HEIGHT = 450;
     private Paddle myPaddle;
     private Ball myBall;
+    private Group myRoot;
     private Scene myScene;
     private Timeline myAnimation;
     private boolean moveR;
@@ -65,11 +71,11 @@ public class SceneCreation extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
 
-        createScene(SCENE_WIDTH, SCENE_HEIGHT, Color.BEIGE);
+        Scene scene = createScene(SCENE_WIDTH, SCENE_HEIGHT, Color.BEIGE);
         primaryStage.setTitle("Breakout");
-        primaryStage.setScene(myScene);
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> update(SECOND_DELAY, myScene));
@@ -82,30 +88,37 @@ public class SceneCreation extends Application {
 
     public void initializeLevel(int level) throws FileNotFoundException {
         ObservableList gameElements = myRoot.getChildren();
-        gameElements.add(myBall);
-        File levelFile = new File("C:\\Users\\conno\\Documents\\CS307\\game_team13" + "\\" + "level");
+        File levelFile = new File("C:\\Users\\conno\\Documents\\CS307\\game_team13" + "\\" + level);
         Scanner input = new Scanner(levelFile);
+
+        int yPosNextBlock = STARTING_Y_BLOCK_POS;
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
+            int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
                 if (block.equals("1")) {
-                    Block newBlock = Block(1, )
+                    Block newBlock = new Block(1, xPosNextBlock, yPosNextBlock);
+                    gameElements.add(newBlock.getShape());
                 }
+                xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
             }
+            yPosNextBlock += BLOCK_HEIGHT + Y_BLOCK_GAP;
         }
     }
 
     // Creates the scene to be put on the stage
-    private void createScene (int width, int height, Paint background) {
-        Group root = new Group();
+    Scene createScene(int width, int height, Paint background) throws FileNotFoundException {
+        myRoot = new Group();
 
         myPaddle = new Paddle();
-        root.getChildren().add(myPaddle);
+        myRoot.getChildren().add(myPaddle);
         myBall = new Ball();
-        root.getChildren().add(myBall);
+        myRoot.getChildren().add(myBall);
+        initializeLevel(1);
 
-        myScene = new Scene(root, width, height, background);
+        myScene = new Scene(myRoot, width, height, background);
         myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
+        return myScene;
     }
 
     // Game loop
