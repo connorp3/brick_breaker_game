@@ -11,7 +11,7 @@ public class Ball extends Circle {
     private Random rand = new Random();
     private static final double START_X_POS = 275;
     private static final double START_Y_POS = 424;
-    private final double START_X_VEL = getRandomInRange(-50, 50);
+    private final double START_X_VEL = getRandomInRange(-100, 100);
     private static final double START_Y_VEL = -150;
     private static final double RADIUS = 5;
     private boolean stuckToPaddle;
@@ -27,6 +27,18 @@ public class Ball extends Circle {
         stuckToPaddle = false;
         this.setId("ball");
     }
+
+    // Set the X velocity for the ball
+    public void setXVel(double newXVel) { XVel = newXVel; }
+
+    // Set the Y velocity for the ball
+    public void setYVel(double newYVel) { YVel = newYVel; }
+
+    // Get the X velocity of the ball
+    public double getXVel() { return XVel; }
+
+    // Get the Y velocity of the ball
+    public double getYVel() { return YVel; }
 
     // The default lateral movement for the ball
     public void moveLateral(double elapsedTime) {
@@ -76,7 +88,7 @@ public class Ball extends Circle {
 
     // The method called when the ball is "shot" by the user.
     public void shootBall() {
-        XVel = getRandomInRange(-50, 50);
+        XVel = getRandomInRange(-100, 100);
         YVel = START_Y_VEL;
     }
 
@@ -87,7 +99,6 @@ public class Ball extends Circle {
         XVel = 0;
         YVel = 0;
         stuckToPaddle = true;
-
     }
 
     // Used to randomize the direction of the ball

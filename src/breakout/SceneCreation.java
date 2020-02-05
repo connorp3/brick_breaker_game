@@ -34,13 +34,19 @@ public class SceneCreation extends Application {
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
         if (code == KeyCode.RIGHT) {
-            moveR = true;
+            moveR = true;   // Move paddle right
         } else if (code == KeyCode.LEFT) {
-            moveL = true;
-        } else if (code == KeyCode.UP) {
+            moveL = true;   // Move paddle left
+        } else if (code == KeyCode.UP && myBall.checkStuckToPaddle()) { // Shoot ball from paddle
             checkShootBall = true;
         } else if (code == KeyCode.R) {
-            myBall.ballReset(myPaddle);
+            myBall.ballReset(myPaddle);  // Reset ball to stick to paddle
+        } else if (code == KeyCode.S) {
+            myBall.setXVel(myBall.getXVel() / 2);  // Cut the overall speed of the ball in half
+            myBall.setYVel(myBall.getYVel() / 2);
+        } else if (code == KeyCode.F) {
+            myBall.setXVel(myBall.getXVel() * 2);  // Double the speed of the ball
+            myBall.setYVel(myBall.getYVel() * 2);
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -87,7 +93,7 @@ public class SceneCreation extends Application {
     public void update(double elapsedTime, Scene scene) {
         stuckToPaddle = myBall.checkStuckToPaddle();
 
-        // Move the paddle to the right if necessary. Also moves ball if it is stuck to the paddle.
+        // Move the paddle to the right. Also moves ball if it is stuck to the paddle.
         if(moveR) {
             myPaddle.moveRight();
             if (stuckToPaddle) {
@@ -95,7 +101,7 @@ public class SceneCreation extends Application {
             }
         }
 
-        // Move the paddle to the left if necessary. Also moves ball if it is stuck to the paddle.
+        // Move the paddle to the left. Also moves ball if it is stuck to the paddle.
         if(moveL) {
             myPaddle.moveLeft();
             if (stuckToPaddle) {

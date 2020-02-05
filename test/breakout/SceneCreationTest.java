@@ -88,4 +88,64 @@ public class SceneCreationTest extends DukeApplicationTest {
         assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
         assertEquals(myPaddle.getY() - myBall.getRadius() - 1, myBall.getCenterY());
     }
+
+    @Test
+    public void testShootBall () {
+        // Start ball from the reset position.
+        myBall.ballReset(myPaddle);
+        // sleep(1, TimeUnit.SECONDS);
+        press(myScene, KeyCode.UP);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        // sleep(1, TimeUnit.SECONDS);
+
+        assertTrue(myBall.getCenterX() != 275);
+        assertTrue(myBall.getCenterY() < 424);
+    }
+
+    @Test
+    public void testCheatKeyR () {
+        // Set ball in arbitrary position that is not the start position
+        myBall.setCenterX(100);
+        myBall.setCenterY(100);
+
+        press(myScene, KeyCode.R);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+
+        assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
+        assertEquals(myPaddle.getY() - myBall.getRadius() - 1, myBall.getCenterY());
+    }
+
+    @Test
+    public void testCheatKeyS() {
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        double initXVel = myBall.getXVel();
+        double initYVel = myBall.getYVel();
+        press(myScene, KeyCode.S);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+
+        assertEquals(initXVel / 2, myBall.getXVel());
+        assertEquals(initYVel / 2, myBall.getYVel());
+    }
+
+    @Test
+    public void testCheatKeyF() {
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        double initXVel = myBall.getXVel();
+        double initYVel = myBall.getYVel();
+        press(myScene, KeyCode.F);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+
+        assertEquals(initXVel * 2, myBall.getXVel());
+        assertEquals(initYVel * 2, myBall.getYVel());
+    }
+    // @Test
+    public void testCheatKeySpace () {
+        //sleep(1, TimeUnit.SECONDS);
+        mySceneCreation.update(SceneCreation.SECOND_DELAY, myScene);
+        // ADD PAUSE
+        //sleep(1, TimeUnit.SECONDS);
+        // Tests to see if the ball has moved from its starting position
+        assertTrue(myBall.getCenterX() == 275);
+        assertTrue(myBall.getCenterY() == 424);
+    }
 }
