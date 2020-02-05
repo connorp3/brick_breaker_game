@@ -10,24 +10,25 @@ public class Paddle extends Rectangle {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 10;
 
+    //Need to discuss "this" vs "myPaddle"
+
     public Paddle() {
+
         this.setX(X_POS);
         this.setY(Y_POS);
         this.setWidth(WIDTH);
         this.setHeight(HEIGHT);
         this.setFill(Color.RED);
+        this.setStroke(Color.BLACK);
         this.setId("paddle");
-
-
     }
 
+    // Method to move the paddle to the right
+    public void moveRight() { this.setX(this.getX() + 10); }
 
-    public void moveRight() {
-        this.setX(this.getX() + 5);
-    }
-
+    // Method to move the paddle to the left
     public void moveLeft() {
-        this.setX(this.getX() - 5);
+        this.setX(this.getX() - 10);
     }
 
 }
