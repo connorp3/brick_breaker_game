@@ -88,18 +88,16 @@ public class SceneCreation extends Application {
 
     public void initializeLevel(int level) throws FileNotFoundException {
         ObservableList gameElements = myRoot.getChildren();
-        File levelFile = new File("C:\\Users\\conno\\Documents\\CS307\\game_team13\\data" + "\\" + level);
-        Scanner input = new Scanner(levelFile);
+        Scanner input = new Scanner(getClass().getClassLoader().getResourceAsStream("\\level"+level+".txt"));
 
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
+        int blockCounter = 1;
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
-                if (block.equals("1")) {
-                    Block newBlock = new Block(1, xPosNextBlock, yPosNextBlock);
-                    gameElements.add(newBlock.getShape());
-                }
+                Block newBlock = new Block (blockCounter, xPosNextBlock, yPosNextBlock);
+                gameElements.add(newBlock.getShape());
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
             }
             yPosNextBlock += BLOCK_HEIGHT + Y_BLOCK_GAP;
