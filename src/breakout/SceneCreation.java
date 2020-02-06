@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -18,6 +19,8 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SceneCreation extends Application {
@@ -41,6 +44,7 @@ public class SceneCreation extends Application {
     private boolean moveL;
     private boolean checkShootBall;
     private boolean stuckToPaddle;
+    private ArrayList<Shape> blockArrayList;
 
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
@@ -78,7 +82,7 @@ public class SceneCreation extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> update(SECOND_DELAY, myScene));
+        KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> update(SECOND_DELAY));
         myAnimation = new Timeline();
         myAnimation.setCycleCount(Timeline.INDEFINITE);
         myAnimation.getKeyFrames().add(frame);
@@ -88,21 +92,22 @@ public class SceneCreation extends Application {
 
     public void initializeLevel(int level) throws FileNotFoundException {
         ObservableList gameElements = myRoot.getChildren();
-        File levelFile = new File("C:\\Users\\conno\\Documents\\CS307\\game_team13\\data" + "\\" + level);
+        InputStream levelFile = getClass().getClassLoader().getResourceAsStream("\\level" + level + ".txt");
+
         Scanner input = new Scanner(levelFile);
 
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
-        int blockNum = 1;
+        int blockCounter = 1;
+        blockArrayList = new ArrayList<Shape>();
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
-                if (block.equals("1")) {
-                    Block newBlock = new Block(blockNum, xPosNextBlock, yPosNextBlock);
-                    gameElements.add(newBlock.getShape());
-                    blockNum++;
-                }
+                Block newBlock = new Block(blockCounter, block, xPosNextBlock, yPosNextBlock);
+                blockArrayList.add(newBlock.getShape());
+                gameElements.add(newBlock.getShape());
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
+                blockCounter += 1;
             }
             yPosNextBlock += BLOCK_HEIGHT + Y_BLOCK_GAP;
         }
@@ -117,15 +122,63 @@ public class SceneCreation extends Application {
         myBall = new Ball();
         myRoot.getChildren().add(myBall);
         initializeLevel(1);
+//        initializeLevel(2);
 
         myScene = new Scene(myRoot, width, height, background);
         myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
         return myScene;
     }
 
-    // Game loop
-    public void update(double elapsedTime, Scene scene) {
+    /**
+     * This is the game loop
+     * @param elapsedTime
+     */
+    public void update(double elapsedTime) {
+        checkPaddleMovements();
+        checkBallMovements(elapsedTime);
+    }
 
+    private void checkBallMovements(double elapsedTime) {
+        // Makes the ball bounce when it reaches the top of the window
+        if(myBall.collideWithTopWall()) {
+            myBall.topWallCollision();
+        }
+
+        // Makes the ball bounce when it collides with a wall
+        if(myBall.collideWithSideWalls(myScene)) {
+            myBall.sideWallCollision();
+        }
+
+        // Bounces the ball once it hits the paddle
+        if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
+            myBall.topWallCollision();
+        }
+
+//        for (Shape block:blockArrayList) {
+//            if(Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1){
+//                myBall.topWallCollision();
+//                myRoot.getChildren().remove(block);
+//            }
+//        }
+
+        // Calls method to reset the ball once it goes out of the bottom of the screen
+        if(myBall.passBottomWall(myScene)) {
+            myBall.ballReset(myPaddle);
+        }
+
+        // Shoots ball and returns ball to normal movement.
+        if (checkShootBall) {
+            myBall.shootBall();
+            myBall.unStick();
+            checkShootBall = false;
+        }
+
+        // Normal ball movement calls
+        myBall.moveVertical(elapsedTime);
+        myBall.moveLateral(elapsedTime);
+    }
+
+    private void checkPaddleMovements() {
         stuckToPaddle = myBall.checkStuckToPaddle();
 
         // Move the paddle to the right. Also moves ball if it is stuck to the paddle.
@@ -145,7 +198,7 @@ public class SceneCreation extends Application {
         }
 
         // Stops paddle at right side of the window
-        if (myPaddle.getX() + myPaddle.getWidth() >= scene.getWidth()) {
+        if (myPaddle.getX() + myPaddle.getWidth() >= myScene.getWidth()) {
             myPaddle.moveLeft();
             if (stuckToPaddle) {
                 myBall.moveLeft();
@@ -163,36 +216,5 @@ public class SceneCreation extends Application {
         // Resets the boolean variables for paddle movement
         moveR = false;
         moveL = false;
-
-        // Makes the ball bounce when it reaches the top of the window
-        if(myBall.collideWithTopWall()) {
-            myBall.topWallCollision();
-        }
-
-        // Makes the ball bounce when it collides with a wall
-        if(myBall.collideWithSideWalls(scene)) {
-            myBall.sideWallCollision();
-        }
-
-        // Bounces the ball once it hits the paddle
-        if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
-            myBall.topWallCollision();
-        }
-
-        // Calls method to reset the ball once it goes out of the bottom of the screen
-        if(myBall.passBottomWall(scene)) {
-            myBall.ballReset(myPaddle);
-        }
-
-        // Shoots ball and returns ball to normal movement.
-        if (checkShootBall) {
-            myBall.shootBall();
-            myBall.unStick();
-            checkShootBall = false;
-        }
-
-        // Normal ball movement calls
-        myBall.moveVertical(elapsedTime);
-        myBall.moveLateral(elapsedTime);
     }
 }
