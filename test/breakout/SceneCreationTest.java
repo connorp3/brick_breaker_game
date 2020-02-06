@@ -1,16 +1,13 @@
 package breakout;
 
 import java.io.FileNotFoundException;
-import java.util.concurrent.TimeUnit;
 
-import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.junit.jupiter.api.Test;
 import util.DukeApplicationTest;
 
@@ -93,7 +90,7 @@ public class SceneCreationTest extends DukeApplicationTest {
 
     @Test
     public void testBallReset () {
-        myBall.topWallCollision();
+        myBall.verticalCollision();
         myBall.setCenterX(10);
         myBall.setCenterY(myScene.getHeight() + 1);
         //sleep(1, TimeUnit.SECONDS);

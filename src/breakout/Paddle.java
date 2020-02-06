@@ -1,5 +1,6 @@
 package breakout;
 
+import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -29,6 +30,14 @@ public class Paddle extends Rectangle {
     // Method to move the paddle to the left
     public void moveLeft() {
         this.setX(this.getX() - 10);
+    }
+
+    public boolean rWallReached (Scene scene) {
+        return this.getX() + this.getWidth() >= scene.getWidth();
+    }
+
+    public boolean lWallReached () {
+        return this.getX() <= 0;
     }
 
 }

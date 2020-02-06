@@ -78,11 +78,11 @@ public class Ball extends Circle {
                 this.getCenterX() - this.getRadius() <= 0;
     }
 
-    public void sideWallCollision() {
+    public void horizontalCollision() {
         XVel = -XVel;
     }
 
-    public void topWallCollision() {
+    public void verticalCollision() {
         YVel = -YVel;
     }
 

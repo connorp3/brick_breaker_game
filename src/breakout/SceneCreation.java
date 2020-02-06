@@ -5,19 +5,15 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -136,23 +132,20 @@ public class SceneCreation extends Application {
     public void update(double elapsedTime) {
         checkPaddleMovements();
         checkBallMovements(elapsedTime);
+        checkBallPaddleInteraction();
     }
 
     private void checkBallMovements(double elapsedTime) {
         // Makes the ball bounce when it reaches the top of the window
         if(myBall.collideWithTopWall()) {
-            myBall.topWallCollision();
+            myBall.verticalCollision();
         }
 
         // Makes the ball bounce when it collides with a wall
         if(myBall.collideWithSideWalls(myScene)) {
-            myBall.sideWallCollision();
+            myBall.horizontalCollision();
         }
 
-        // Bounces the ball once it hits the paddle
-        if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
-            myBall.topWallCollision();
-        }
 
 //        for (Shape block:blockArrayList) {
 //            if(Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1){
@@ -178,40 +171,35 @@ public class SceneCreation extends Application {
         myBall.moveLateral(elapsedTime);
     }
 
-    private void checkPaddleMovements() {
+    private void checkBallPaddleInteraction() {
+        // Bounces the ball once it hits the paddle
+        if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
+            myBall.verticalCollision();
+        }
+
         stuckToPaddle = myBall.checkStuckToPaddle();
 
+        if(moveR && stuckToPaddle && !myPaddle.rWallReached(myScene)) {
+            myBall.moveRight();
+        }
+
+        if(moveL && stuckToPaddle &&!myPaddle.lWallReached()) {
+            myBall.moveLeft();
+        }
+    }
+
+    private void checkPaddleMovements() {
+
         // Move the paddle to the right. Also moves ball if it is stuck to the paddle.
-        if(moveR) {
+        if(moveR && !myPaddle.rWallReached(myScene)) {
             myPaddle.moveRight();
-            if (stuckToPaddle) {
-                myBall.moveRight();
-            }
         }
 
         // Move the paddle to the left. Also moves ball if it is stuck to the paddle.
-        if(moveL) {
+        if(moveL && !myPaddle.lWallReached()) {
             myPaddle.moveLeft();
-            if (stuckToPaddle) {
-                myBall.moveLeft();
-            }
         }
 
-        // Stops paddle at right side of the window
-        if (myPaddle.getX() + myPaddle.getWidth() >= myScene.getWidth()) {
-            myPaddle.moveLeft();
-            if (stuckToPaddle) {
-                myBall.moveLeft();
-            }
-        }
-
-        // Stops paddle at the left side of the window
-        if (myPaddle.getX() <= 0) {
-            myPaddle.moveRight();
-            if (stuckToPaddle) {
-                myBall.moveRight();
-            }
-        }
 
         // Resets the boolean variables for paddle movement
         moveR = false;
