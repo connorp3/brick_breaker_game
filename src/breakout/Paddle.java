@@ -32,6 +32,7 @@ public class Paddle extends Rectangle {
         this.setX(this.getX() - 10);
     }
 
+    //CGP19 I believe I extracted these methods from the update method to make it look a bit cleaner
     public boolean rWallReached (Scene scene) {
         return this.getX() + this.getWidth() >= scene.getWidth();
     }

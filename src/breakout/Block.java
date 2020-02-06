@@ -15,7 +15,8 @@ public class Block extends Rectangle {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 20;
 
-
+    //CGP19 I changed this to extend Rectangle; I don't think we are planning on having blocks that
+    //aren't rectangle shaped, so this makes the functionality of the blocks easier to work with
     public Block(int whichOne, int xPos, int yPos) {
         this.setWidth(WIDTH);
         this.setHeight(HEIGHT);
@@ -27,7 +28,7 @@ public class Block extends Rectangle {
     }
 
 
-
+    //Removes block from game
     public void eliminateBlock(Group root) {
         root.getChildren().remove(this);
     }

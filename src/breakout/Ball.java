@@ -28,6 +28,9 @@ public class Ball extends Circle {
         this.setId("ball");
     }
 
+    //CGP19 The set velocity methods are no longer used. Duvall added to the design specification that using setters and getters
+    //was generally not good design, so I turned them into halfSpeed and doubleSpeed methods
+
     // Set the X velocity for the ball
     public void setXVel(double newXVel) { XVel = newXVel; }
 
@@ -56,6 +59,8 @@ public class Ball extends Circle {
     // Allows ball to move in perfect sync with the paddle when the ball should be "stuck" to the paddle
     public void moveLeft() { this.setCenterX(this.getCenterX() - 10); }
 
+    //CGP19 These methods were no longer needed
+
     // Returns whether the ball should be "stuck" to the paddle or not. Used by paddle.
     //public boolean checkStuckToPaddle() { return stuckToPaddle; }
 
@@ -77,15 +82,16 @@ public class Ball extends Circle {
         return this.getCenterX() + this.getRadius() >= scene.getWidth() ||
                 this.getCenterX() - this.getRadius() <= 0;
     }
-
+    //CGP19 Changed name of method to be more general
     public void horizontalCollision() {
         XVel = -XVel;
     }
-
+    //CGP19 Changed name of method to be more general
     public void verticalCollision() {
         YVel = -YVel;
     }
 
+    //CGP19 Might be smart to combine these into one method that takes the speed increase as a parameter
     public void doubleSpeed() {
         XVel = 2*XVel;
         YVel = 2*YVel;

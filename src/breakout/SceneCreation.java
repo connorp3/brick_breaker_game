@@ -53,9 +53,10 @@ public class SceneCreation extends Application {
         } else if (code == KeyCode.UP && resetBall == true) { // Shoot ball from paddle
             checkShootBall = true;
         } else if (code == KeyCode.R) {
-            resetBall = true; // Reset ball to stick to paddle
+            resetBall = true; // Reset ball to stick to paddle  //CGP19 changed this to boolean value. When I worked with a TA a few days ago, he said it was
+                                                                // a good idea to actually perform the actions of the key inputs in update and to use booleans here
         } else if (code == KeyCode.S) {
-            myBall.halfSpeed();  // Cut the overall speed of the ball in half
+            myBall.halfSpeed();  // Cut the overall speed of the ball in half //CGP19 created helper methods in ball class for these
         } else if (code == KeyCode.F) {
             myBall.doubleSpeed();  // Double the speed of the ball
         }
@@ -94,11 +95,12 @@ public class SceneCreation extends Application {
 
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
         int blockCounter = 1;
-        blockArrayList = new ArrayList<Shape>();
+        blockArrayList = new ArrayList<Shape>();  //I changed the way the ball block interaction method worked, so this list isn't actually used when removing blocks
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
-            for(String block : blockList) {
+            for(String block : blockList) { //Need to add logic to this that handles different numbers in the text files as different types of blocks
+                                            //e.g. 0 = no block 1 = easyblock, 2 = mediumblock, etc.
                 Block newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
                 blockArrayList.add(newBlock);
                 gameElements.add(newBlock);
@@ -130,6 +132,7 @@ public class SceneCreation extends Application {
      * @param elapsedTime
      */
     public void update(double elapsedTime) {
+        //CGP19 Split these methods up even more. Separated out interactions between game nodes.
         checkBallBlockInteraction();
         checkBallPaddleInteraction();
         checkPaddleMovements();
@@ -174,9 +177,10 @@ public class SceneCreation extends Application {
             myBall.verticalCollision();
         }
 
-
+        //CGP19 Removed checkStuckToPaddle as a method for ball. resetBall boolean able to handle everything that stuckToPaddle
         //stuckToPaddle = myBall.checkStuckToPaddle();
 
+        //Moves ball with paddle if it is stuck
         if(moveR && resetBall && !myPaddle.rWallReached(myScene)) {
             myBall.moveRight();
         }
@@ -185,7 +189,7 @@ public class SceneCreation extends Application {
             myBall.moveLeft();
         }
     }
-
+    //Remove node from myRoot and bounce ball if it is a block and the ball hits the block
     private void checkBallBlockInteraction() {
         for (Node gamePiece : myRoot.getChildren()) {
             if (gamePiece instanceof Block) {
@@ -199,12 +203,12 @@ public class SceneCreation extends Application {
 
     private void checkPaddleMovements() {
 
-        // Move the paddle to the right. Also moves ball if it is stuck to the paddle.
+        // Move the paddle to the right.
         if(moveR && !myPaddle.rWallReached(myScene)) {
             myPaddle.moveRight();
         }
 
-        // Move the paddle to the left. Also moves ball if it is stuck to the paddle.
+        // Move the paddle to the left.
         if(moveL && !myPaddle.lWallReached()) {
             myPaddle.moveLeft();
         }
