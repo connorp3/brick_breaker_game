@@ -16,9 +16,16 @@ public class Block {
 
     private Rectangle myShape;
 
-    public Block (int whichOne, int xPos, int yPos) {
+    public Block(int whichOne, String blockType, int xPos, int yPos) {
         myShape = new Rectangle(xPos, yPos, WIDTH, HEIGHT);
-        myShape.setFill(Color.AQUAMARINE);
+        if (blockType.equals("1")) {
+            myShape.setFill(Color.LIGHTSTEELBLUE);
+        } else if (blockType.equals("2")) {
+            myShape.setFill(Color.LIGHTSKYBLUE);
+        } else if (blockType.equals("3")) {
+            myShape.setFill(Color.LIGHTSLATEGREY);
+        }
+
         myShape.setStroke(Color.BLACK);
         myShape.setId("block_" + whichOne);
     }

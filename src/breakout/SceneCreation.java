@@ -18,6 +18,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 public class SceneCreation extends Application {
@@ -88,7 +89,9 @@ public class SceneCreation extends Application {
 
     public void initializeLevel(int level) throws FileNotFoundException {
         ObservableList gameElements = myRoot.getChildren();
-        Scanner input = new Scanner(getClass().getClassLoader().getResourceAsStream("\\level" + level + ".txt"));
+        InputStream levelFile = getClass().getClassLoader().getResourceAsStream("\\level" + level + ".txt");
+
+        Scanner input = new Scanner(levelFile);
 
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
         int blockCounter = 1;
@@ -96,7 +99,7 @@ public class SceneCreation extends Application {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
-                Block newBlock = new Block(blockCounter, xPosNextBlock, yPosNextBlock);
+                Block newBlock = new Block(blockCounter, block, xPosNextBlock, yPosNextBlock);
                 gameElements.add(newBlock.getShape());
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
                 blockCounter += 1;
@@ -114,6 +117,7 @@ public class SceneCreation extends Application {
         myBall = new Ball();
         myRoot.getChildren().add(myBall);
         initializeLevel(1);
+//        initializeLevel(2);
 
         myScene = new Scene(myRoot, width, height, background);
         myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
