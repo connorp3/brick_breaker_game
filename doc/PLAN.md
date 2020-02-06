@@ -36,6 +36,10 @@ This level will be a rectangle of non-moving bricks, and within this square will
 Sketches of each level are provided here in the link below. Number and size of bricks in the sketches may not be
 exactly what is designed in the program. These sketches are just for general configuration visualization.
 
+![level sketch designs](IMG_4127.jpg)
+![level sketch designs](IMG_4128.jpg)
+
+
 ### Bricks Ideas
 We plan on having 5 different types of bricks:
 
