@@ -60,7 +60,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     @Test
     public void testBallMove() {
         //sleep(1, TimeUnit.SECONDS);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         // Tests to see if the ball has moved from its starting position
         assertTrue(myBall.getCenterX() != 275);
@@ -73,7 +73,7 @@ public class SceneCreationTest extends DukeApplicationTest {
         myPaddle.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.RIGHT);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         assertEquals(myScene.getWidth()/2 + 10, myPaddle.getX());
         assertEquals(myScene.getHeight()/2, myPaddle.getY());
@@ -85,7 +85,7 @@ public class SceneCreationTest extends DukeApplicationTest {
         myPaddle.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.LEFT);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         assertEquals(myScene.getWidth()/2 - 10, myPaddle.getX());
         assertEquals(myScene.getHeight()/2, myPaddle.getY());
@@ -97,7 +97,7 @@ public class SceneCreationTest extends DukeApplicationTest {
         myBall.setCenterX(10);
         myBall.setCenterY(myScene.getHeight() + 1);
         //sleep(1, TimeUnit.SECONDS);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
 
         assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
@@ -110,7 +110,7 @@ public class SceneCreationTest extends DukeApplicationTest {
         myBall.ballReset(myPaddle);
         // sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.UP);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         // sleep(1, TimeUnit.SECONDS);
 
         assertTrue(myBall.getCenterX() != 275);
@@ -124,7 +124,7 @@ public class SceneCreationTest extends DukeApplicationTest {
         myBall.setCenterY(100);
 
         press(myScene, KeyCode.R);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
 
         assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
         assertEquals(myPaddle.getY() - myBall.getRadius() - 1, myBall.getCenterY());
@@ -132,11 +132,11 @@ public class SceneCreationTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyS() {
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         double initXVel = myBall.getXVel();
         double initYVel = myBall.getYVel();
         press(myScene, KeyCode.S);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
 
         assertEquals(initXVel / 2, myBall.getXVel());
         assertEquals(initYVel / 2, myBall.getYVel());
@@ -144,11 +144,11 @@ public class SceneCreationTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyF() {
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
         double initXVel = myBall.getXVel();
         double initYVel = myBall.getYVel();
         press(myScene, KeyCode.F);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
 
         assertEquals(initXVel * 2, myBall.getXVel());
         assertEquals(initYVel * 2, myBall.getYVel());
