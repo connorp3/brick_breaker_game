@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -19,6 +20,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class SceneCreation extends Application {
@@ -42,6 +44,7 @@ public class SceneCreation extends Application {
     private boolean moveL;
     private boolean checkShootBall;
     private boolean stuckToPaddle;
+    private ArrayList<Shape> blockArrayList;
 
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
@@ -95,11 +98,13 @@ public class SceneCreation extends Application {
 
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
         int blockCounter = 1;
+        blockArrayList = new ArrayList<Shape>();
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
                 Block newBlock = new Block(blockCounter, block, xPosNextBlock, yPosNextBlock);
+                blockArrayList.add(newBlock.getShape());
                 gameElements.add(newBlock.getShape());
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
                 blockCounter += 1;
@@ -124,6 +129,15 @@ public class SceneCreation extends Application {
         return myScene;
     }
 
+    /**
+     * This is the game loop
+     * @param elapsedTime
+     */
+    public void update(double elapsedTime) {
+        checkPaddleMovements();
+        checkBallMovements(elapsedTime);
+    }
+
     private void checkBallMovements(double elapsedTime) {
         // Makes the ball bounce when it reaches the top of the window
         if(myBall.collideWithTopWall()) {
@@ -139,6 +153,13 @@ public class SceneCreation extends Application {
         if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
             myBall.topWallCollision();
         }
+
+//        for (Shape block:blockArrayList) {
+//            if(Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1){
+//                myBall.topWallCollision();
+//                myRoot.getChildren().remove(block);
+//            }
+//        }
 
         // Calls method to reset the ball once it goes out of the bottom of the screen
         if(myBall.passBottomWall(myScene)) {
@@ -195,14 +216,5 @@ public class SceneCreation extends Application {
         // Resets the boolean variables for paddle movement
         moveR = false;
         moveL = false;
-    }
-
-    /**
-     * This is the game loop
-     * @param elapsedTime
-     */
-    public void update(double elapsedTime) {
-        checkPaddleMovements();
-        checkBallMovements(elapsedTime);
     }
 }
