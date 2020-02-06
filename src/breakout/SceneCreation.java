@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -24,9 +25,9 @@ public class SceneCreation extends Application {
     private static final int X_BLOCK_GAP = 2;
     private static final int Y_BLOCK_GAP = 2;
     private static final int STARTING_Y_BLOCK_POS = 50;
-    private static final int STARTING_X_BLOCK_POS = 6;
+    private static final int STARTING_X_BLOCK_POS = 16;
     private static final int BLOCK_HEIGHT = 20;
-    private static final int BLOCK_WIDTH = 25;
+    private static final int BLOCK_WIDTH = 50;
     private static final int FRAMES_PER_SECOND = 60;
     public static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
     public static final int SCENE_WIDTH = 550;
@@ -39,6 +40,7 @@ public class SceneCreation extends Application {
     private boolean moveR;
     private boolean moveL;
     private boolean checkShootBall;
+    private boolean resetBall;
     private boolean stuckToPaddle;
     private ArrayList<Shape> blockArrayList;
 
@@ -48,16 +50,14 @@ public class SceneCreation extends Application {
             moveR = true;   // Move paddle right
         } else if (code == KeyCode.LEFT) {
             moveL = true;   // Move paddle left
-        } else if (code == KeyCode.UP && myBall.checkStuckToPaddle()) { // Shoot ball from paddle
+        } else if (code == KeyCode.UP && resetBall == true) { // Shoot ball from paddle
             checkShootBall = true;
         } else if (code == KeyCode.R) {
-            myBall.ballReset(myPaddle);  // Reset ball to stick to paddle
+            resetBall = true; // Reset ball to stick to paddle
         } else if (code == KeyCode.S) {
-            myBall.setXVel(myBall.getXVel() / 2);  // Cut the overall speed of the ball in half
-            myBall.setYVel(myBall.getYVel() / 2);
+            myBall.halfSpeed();  // Cut the overall speed of the ball in half
         } else if (code == KeyCode.F) {
-            myBall.setXVel(myBall.getXVel() * 2);  // Double the speed of the ball
-            myBall.setYVel(myBall.getYVel() * 2);
+            myBall.doubleSpeed();  // Double the speed of the ball
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -99,9 +99,9 @@ public class SceneCreation extends Application {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
             for(String block : blockList) {
-                Block newBlock = new Block(blockCounter, block, xPosNextBlock, yPosNextBlock);
-                blockArrayList.add(newBlock.getShape());
-                gameElements.add(newBlock.getShape());
+                Block newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                blockArrayList.add(newBlock);
+                gameElements.add(newBlock);
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
                 blockCounter += 1;
             }
@@ -130,9 +130,10 @@ public class SceneCreation extends Application {
      * @param elapsedTime
      */
     public void update(double elapsedTime) {
+        checkBallBlockInteraction();
+        checkBallPaddleInteraction();
         checkPaddleMovements();
         checkBallMovements(elapsedTime);
-        checkBallPaddleInteraction();
     }
 
     private void checkBallMovements(double elapsedTime) {
@@ -147,22 +148,18 @@ public class SceneCreation extends Application {
         }
 
 
-//        for (Shape block:blockArrayList) {
-//            if(Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1){
-//                myBall.topWallCollision();
-//                myRoot.getChildren().remove(block);
-//            }
-//        }
+//
 
         // Calls method to reset the ball once it goes out of the bottom of the screen
-        if(myBall.passBottomWall(myScene)) {
+        if(myBall.passBottomWall(myScene) || resetBall == true) {
             myBall.ballReset(myPaddle);
+            resetBall = true;
         }
 
         // Shoots ball and returns ball to normal movement.
         if (checkShootBall) {
             myBall.shootBall();
-            myBall.unStick();
+            resetBall = false;
             checkShootBall = false;
         }
 
@@ -177,14 +174,26 @@ public class SceneCreation extends Application {
             myBall.verticalCollision();
         }
 
-        stuckToPaddle = myBall.checkStuckToPaddle();
 
-        if(moveR && stuckToPaddle && !myPaddle.rWallReached(myScene)) {
+        //stuckToPaddle = myBall.checkStuckToPaddle();
+
+        if(moveR && resetBall && !myPaddle.rWallReached(myScene)) {
             myBall.moveRight();
         }
 
-        if(moveL && stuckToPaddle &&!myPaddle.lWallReached()) {
+        if(moveL && resetBall && !myPaddle.lWallReached()) {
             myBall.moveLeft();
+        }
+    }
+
+    private void checkBallBlockInteraction() {
+        for (Node gamePiece : myRoot.getChildren()) {
+            if (gamePiece instanceof Block) {
+                if (Shape.intersect(myBall, (Shape) gamePiece).getBoundsInLocal().getWidth() != -1) {
+                    myBall.verticalCollision();
+                    ((Block) gamePiece).eliminateBlock(myRoot);
+                }
+            }
         }
     }
 

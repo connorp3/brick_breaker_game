@@ -57,10 +57,10 @@ public class Ball extends Circle {
     public void moveLeft() { this.setCenterX(this.getCenterX() - 10); }
 
     // Returns whether the ball should be "stuck" to the paddle or not. Used by paddle.
-    public boolean checkStuckToPaddle() { return stuckToPaddle; }
+    //public boolean checkStuckToPaddle() { return stuckToPaddle; }
 
     // Resets the boolean stuckToPaddle to resume normal gameplay after ball has been shot.
-    public void unStick() { this.stuckToPaddle = false; }
+    //public void unStick() { this.stuckToPaddle = false; }
 
     // Returns whether the ball has passed the bottom wall of the window.
     public boolean passBottomWall(Scene scene) {
@@ -84,6 +84,16 @@ public class Ball extends Circle {
 
     public void verticalCollision() {
         YVel = -YVel;
+    }
+
+    public void doubleSpeed() {
+        XVel = 2*XVel;
+        YVel = 2*YVel;
+    }
+
+    public void halfSpeed() {
+        XVel = 0.5*XVel;
+        YVel = 0.5*YVel;
     }
 
     // The method called when the ball is "shot" by the user.

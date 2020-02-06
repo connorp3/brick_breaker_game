@@ -1,5 +1,6 @@
 package breakout;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -10,27 +11,24 @@ import javafx.scene.shape.Rectangle;
  */
 
 
-public class Block {
-    private static final int WIDTH = 25;
+public class Block extends Rectangle {
+    private static final int WIDTH = 50;
     private static final int HEIGHT = 20;
 
-    private Rectangle myShape;
 
-    public Block(int whichOne, String blockType, int xPos, int yPos) {
-        myShape = new Rectangle(xPos, yPos, WIDTH, HEIGHT);
-        if (blockType.equals("1")) {
-            myShape.setFill(Color.LIGHTSTEELBLUE);
-        } else if (blockType.equals("2")) {
-            myShape.setFill(Color.LIGHTSKYBLUE);
-        } else if (blockType.equals("3")) {
-            myShape.setFill(Color.LIGHTSLATEGREY);
-        }
+    public Block(int whichOne, int xPos, int yPos) {
+        this.setWidth(WIDTH);
+        this.setHeight(HEIGHT);
+        this.setX(xPos);
+        this.setY(yPos);
+        this.setStroke(Color.BLACK);
+        this.setId("block_" + whichOne);
 
-        myShape.setStroke(Color.BLACK);
-        myShape.setId("block_" + whichOne);
     }
 
-    public Rectangle getShape() {
-        return myShape;
+
+
+    public void eliminateBlock(Group root) {
+        root.getChildren().remove(this);
     }
 }
