@@ -99,6 +99,7 @@ public class SceneCreation extends Application {
                 Block newBlock = new Block(blockCounter, xPosNextBlock, yPosNextBlock);
                 gameElements.add(newBlock.getShape());
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
+                blockCounter += 1;
             }
             yPosNextBlock += BLOCK_HEIGHT + Y_BLOCK_GAP;
         }

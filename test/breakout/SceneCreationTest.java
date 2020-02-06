@@ -46,8 +46,8 @@ public class SceneCreationTest extends DukeApplicationTest {
     public void testPaddleInitialPosition() {
         assertEquals(250, myPaddle.getX());
         assertEquals(430, myPaddle.getY());
-        assertEquals(50, myPaddle.getWidth());
-        assertEquals(10, myPaddle.getHeight());
+        assertEquals(60, myPaddle.getWidth());
+        assertEquals(5, myPaddle.getHeight());
     }
 
     @Test
