@@ -188,7 +188,9 @@ public class SceneCreation extends Application {
     private void checkBallPaddleInteraction() {
         // Bounces the ball once it hits the paddle
         if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
+            whichThirdOfPaddle();
             myBall.verticalCollision();
+
         }
 
         //CGP19 Removed checkStuckToPaddle as a method for ball. resetBall boolean able to handle everything that stuckToPaddle
@@ -205,25 +207,40 @@ public class SceneCreation extends Application {
         }
     }
 
+    private void whichThirdOfPaddle() {
+        if (myBall.getCenterX() <= myPaddle.getX() + myPaddle.getWidth()/3 || myBall.getCenterX() >= myPaddle.getX() + 2*myPaddle.getWidth()/3) {
+            myBall.horizontalCollision();
+        }
+    }
+
     //Remove node from myRoot and bounce ball if it is a block and the ball hits the block
     private void checkBallBlockInteraction() {
         // Create new list to keep track of blocks to remove from blockArrayList
         ArrayList<Shape> toRemove = new ArrayList<>();
 
         // If a block is hit, remove it from the myRoot group and add it to the toRemove list
-        for (Block block:blockArrayList) {
-            if (Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1) {
+        for (Block block : blockArrayList) {
+            if (Shape.intersect(block, myBall).getBoundsInLocal().getWidth() != -1 &&
+                    Shape.intersect(block, myBall).getBoundsInLocal().getHeight() < Shape.intersect(block, myBall).getBoundsInLocal().getWidth()) {
                 myBall.verticalCollision();
                 block.eliminateBlock(myRoot);
-                if(block.isBlockDestroyed()) {
+                if (block.isBlockDestroyed()) {
                     toRemove.add(block);
                 }
-
+            }
+        }
+        for (Block block : blockArrayList) {
+            if (Shape.intersect(block, myBall).getBoundsInLocal().getHeight() != -1 && Shape.intersect(block, myBall).getBoundsInLocal().getHeight() > Shape.intersect(block, myBall).getBoundsInLocal().getWidth()) {
+                myBall.horizontalCollision();
+                block.eliminateBlock(myRoot);
+                if (block.isBlockDestroyed()) {
+                    toRemove.add(block);
+                }
             }
         }
 
-        // Remove eliminated blocks from blockArrayList
-        for (Shape eliminatedBlock: toRemove) {
+            // Remove eliminated blocks from blockArrayList
+        for (Shape eliminatedBlock : toRemove) {
             blockArrayList.remove(eliminatedBlock);
         }
     }
@@ -243,4 +260,8 @@ public class SceneCreation extends Application {
         moveR = false;
         moveL = false;
     }
+
+/*    private void collision(Shape gamePiece1, Shape gamePiece2) {
+        if gamePiece1.get
+    }*/
 }
