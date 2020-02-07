@@ -14,7 +14,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
