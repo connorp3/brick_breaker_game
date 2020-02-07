@@ -27,7 +27,6 @@ public class Block extends Rectangle {
 
     }
 
-
     //Removes block from game
     public void eliminateBlock(Group root) {
         root.getChildren().remove(this);

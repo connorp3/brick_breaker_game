@@ -6,7 +6,6 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
@@ -49,7 +48,7 @@ public class SceneCreation extends Application {
             moveR = true;   // Move paddle right
         } else if (code == KeyCode.LEFT) {
             moveL = true;   // Move paddle left
-        } else if (code == KeyCode.UP && resetBall == true) { // Shoot ball from paddle
+        } else if (code == KeyCode.UP && resetBall) { // Shoot ball from paddle
             checkShootBall = true;
         } else if (code == KeyCode.R) {
             resetBall = true; // Reset ball to stick to paddle  //CGP19 changed this to boolean value. When I worked with a TA a few days ago, he said it was
@@ -85,22 +84,42 @@ public class SceneCreation extends Application {
         myAnimation.play();
     }
 
-
+    // Initialize the elements of the game
     public void initializeLevel(int level) throws FileNotFoundException {
         ObservableList gameElements = myRoot.getChildren();
         InputStream levelFile = getClass().getClassLoader().getResourceAsStream("\\level" + level + ".txt");
 
         Scanner input = new Scanner(levelFile);
 
+        initializeBlocks(gameElements, input);
+        initializeBall();
+    }
+
+    // Method to reset ball where it is stuck to paddle
+    private void initializeBall() {
+        myBall.ballReset(myPaddle);
+        resetBall = true;
+    }
+
+    // Arrange the blocks based on the given configuration file
+    private void initializeBlocks(ObservableList gameElements, Scanner input) {
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
         int blockCounter = 1;
         blockArrayList = new ArrayList<Shape>();  //I changed the way the ball block interaction method worked, so this list isn't actually used when removing blocks
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
-            for(String block : blockList) { //Need to add logic to this that handles different numbers in the text files as different types of blocks
-                                            //e.g. 0 = no block 1 = easyblock, 2 = mediumblock, etc.
-                Block newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+            for(String block : blockList) { //jmt86 - Determines which number is read and adds corresponding block
+                Block newBlock;
+                if (block.equals("1")) {
+                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                } else if (block.equals("2")) {
+                    newBlock = new MediumBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                } else if (block.equals("3")) {
+                    newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                } else {
+                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                }
                 blockArrayList.add(newBlock);
                 gameElements.add(newBlock);
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
@@ -118,8 +137,8 @@ public class SceneCreation extends Application {
         myRoot.getChildren().add(myPaddle);
         myBall = new Ball();
         myRoot.getChildren().add(myBall);
-        initializeLevel(1);
-//        initializeLevel(2);
+//        initializeLevel(1);
+        initializeLevel(2);
 
         myScene = new Scene(myRoot, width, height, background);
         myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
@@ -149,13 +168,9 @@ public class SceneCreation extends Application {
             myBall.horizontalCollision();
         }
 
-
-//
-
         // Calls method to reset the ball once it goes out of the bottom of the screen
-        if(myBall.passBottomWall(myScene) || resetBall == true) {
-            myBall.ballReset(myPaddle);
-            resetBall = true;
+        if(myBall.passBottomWall(myScene) || resetBall) {
+            initializeBall();
         }
 
         // Shoots ball and returns ball to normal movement.
@@ -179,29 +194,38 @@ public class SceneCreation extends Application {
         //CGP19 Removed checkStuckToPaddle as a method for ball. resetBall boolean able to handle everything that stuckToPaddle
         //stuckToPaddle = myBall.checkStuckToPaddle();
 
-        //Moves ball with paddle if it is stuck
+        //Moves ball with paddle if it is stuck and check the right bounds of the scene
         if(moveR && resetBall && !myPaddle.rWallReached(myScene)) {
             myBall.moveRight();
         }
 
+        //Moves ball with paddle if it is stuck and check the left bounds of the scene
         if(moveL && resetBall && !myPaddle.lWallReached()) {
             myBall.moveLeft();
         }
     }
+
     //Remove node from myRoot and bounce ball if it is a block and the ball hits the block
     private void checkBallBlockInteraction() {
-        for (Node gamePiece : myRoot.getChildren()) {
-            if (gamePiece instanceof Block) {
-                if (Shape.intersect(myBall, (Shape) gamePiece).getBoundsInLocal().getWidth() != -1) {
-                    myBall.verticalCollision();
-                    ((Block) gamePiece).eliminateBlock(myRoot);
-                }
+        // Create new list to keep track of blocks to remove from blockArrayList
+        ArrayList<Shape> toRemove = new ArrayList<>();
+
+        // If a block is hit, remove it from the myRoot group and add it to the toRemove list
+        for (Shape block:blockArrayList) {
+            if (Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1) {
+                myBall.verticalCollision();
+                myRoot.getChildren().remove(block);
+                toRemove.add(block);
             }
+        }
+
+        // Remove eliminated blocks from blockArrayList
+        for (Shape eliminatedBlock: toRemove) {
+            blockArrayList.remove(eliminatedBlock);
         }
     }
 
     private void checkPaddleMovements() {
-
         // Move the paddle to the right.
         if(moveR && !myPaddle.rWallReached(myScene)) {
             myPaddle.moveRight();
@@ -211,7 +235,6 @@ public class SceneCreation extends Application {
         if(moveL && !myPaddle.lWallReached()) {
             myPaddle.moveLeft();
         }
-
 
         // Resets the boolean variables for paddle movement
         moveR = false;

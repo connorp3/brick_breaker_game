@@ -59,14 +59,6 @@ public class Ball extends Circle {
     // Allows ball to move in perfect sync with the paddle when the ball should be "stuck" to the paddle
     public void moveLeft() { this.setCenterX(this.getCenterX() - 10); }
 
-    //CGP19 These methods were no longer needed
-
-    // Returns whether the ball should be "stuck" to the paddle or not. Used by paddle.
-    //public boolean checkStuckToPaddle() { return stuckToPaddle; }
-
-    // Resets the boolean stuckToPaddle to resume normal gameplay after ball has been shot.
-    //public void unStick() { this.stuckToPaddle = false; }
-
     // Returns whether the ball has passed the bottom wall of the window.
     public boolean passBottomWall(Scene scene) {
         return this.getCenterY() >= scene.getHeight();
@@ -82,11 +74,11 @@ public class Ball extends Circle {
         return this.getCenterX() + this.getRadius() >= scene.getWidth() ||
                 this.getCenterX() - this.getRadius() <= 0;
     }
-    //CGP19 Changed name of method to be more general
+    // Changes velocity upon hitting the side of the scene or a block (to be implemented)
     public void horizontalCollision() {
         XVel = -XVel;
     }
-    //CGP19 Changed name of method to be more general
+    // Changes velocity upon hitting the top or bottom of the scene or a block (to be implemented)
     public void verticalCollision() {
         YVel = -YVel;
     }
