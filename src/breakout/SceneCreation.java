@@ -40,7 +40,7 @@ public class SceneCreation extends Application {
     private boolean checkShootBall;
     private boolean resetBall;
     private boolean stuckToPaddle;
-    private ArrayList<Shape> blockArrayList;
+    private ArrayList<Block> blockArrayList;
 
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
@@ -105,7 +105,7 @@ public class SceneCreation extends Application {
     private void initializeBlocks(ObservableList gameElements, Scanner input) {
         int yPosNextBlock = STARTING_Y_BLOCK_POS;
         int blockCounter = 1;
-        blockArrayList = new ArrayList<Shape>();  //I changed the way the ball block interaction method worked, so this list isn't actually used when removing blocks
+        blockArrayList = new ArrayList<Block>();  //I changed the way the ball block interaction method worked, so this list isn't actually used when removing blocks
         while (input.hasNextLine()) {
             String[] blockList = input.nextLine().split(" ");
             int xPosNextBlock = STARTING_X_BLOCK_POS;
@@ -211,11 +211,14 @@ public class SceneCreation extends Application {
         ArrayList<Shape> toRemove = new ArrayList<>();
 
         // If a block is hit, remove it from the myRoot group and add it to the toRemove list
-        for (Shape block:blockArrayList) {
+        for (Block block:blockArrayList) {
             if (Shape.intersect(myBall, block).getBoundsInLocal().getWidth() != -1) {
                 myBall.verticalCollision();
-                myRoot.getChildren().remove(block);
-                toRemove.add(block);
+                block.eliminateBlock(myRoot);
+                if(block.isBlockDestroyed()) {
+                    toRemove.add(block);
+                }
+
             }
         }
 

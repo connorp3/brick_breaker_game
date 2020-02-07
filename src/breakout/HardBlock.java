@@ -7,6 +7,7 @@ public class HardBlock extends Block {
     public HardBlock(int whichOne, int xPos, int yPos) {
         super(whichOne, xPos, yPos);
         this.setFill(Color.LIGHTSLATEGREY);
+        hitsLimit = 3;
     }
 
 }

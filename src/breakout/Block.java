@@ -14,6 +14,8 @@ import javafx.scene.shape.Rectangle;
 public class Block extends Rectangle {
     private static final int WIDTH = 50;
     private static final int HEIGHT = 20;
+    protected int hits;
+    protected int hitsLimit;
 
     //CGP19 I changed this to extend Rectangle; I don't think we are planning on having blocks that
     //aren't rectangle shaped, so this makes the functionality of the blocks easier to work with
@@ -24,11 +26,22 @@ public class Block extends Rectangle {
         this.setY(yPos);
         this.setStroke(Color.BLACK);
         this.setId("block_" + whichOne);
+        hits = 0;
 
     }
 
     //Removes block from game
     public void eliminateBlock(Group root) {
-        root.getChildren().remove(this);
+        hits++;
+            if(hits == hitsLimit) {
+                root.getChildren().remove(this);
+            }
+    }
+
+    public boolean isBlockDestroyed() {
+        if(hits == hitsLimit) {
+            return true;
+        }
+        return false;
     }
 }
