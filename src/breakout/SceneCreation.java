@@ -11,6 +11,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.io.FileNotFoundException;
@@ -39,6 +43,9 @@ public class SceneCreation extends Application {
     private Group myRoot;
     private Scene myScene;
     private Timeline myAnimation;
+    private Text lifeCounter;
+    private Text gameOverMessage;
+    private Text myScoreDisplay;
     private boolean moveR;
     private boolean moveL;
     private boolean checkShootBall;
@@ -47,11 +54,27 @@ public class SceneCreation extends Application {
     private ArrayList<Block> blockArrayList;
     private ArrayList<PowerUp> powerUpArrayList;
     private boolean powerUpExists;
+    private int numLives;
+    private int myScore;
 
     public int getBlockArrayListSize() {
         return blockArrayList.size();
     }
 
+    public void initializeText() {
+        numLives = 3;
+
+        lifeCounter.setX(10);
+        lifeCounter.setY(20);
+        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        lifeCounter.setText("Lives Remaining: " + numLives);
+
+        myScore = 0;
+        myScoreDisplay.setX(SCENE_WIDTH - 100);
+        myScoreDisplay.setY(20);
+        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        myScoreDisplay.setText("Score: " + myScore);
+    }
 
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
@@ -68,9 +91,10 @@ public class SceneCreation extends Application {
             myBall.halfSpeed();  // Cut the overall speed of the ball in half //CGP19 created helper methods in ball class for these
         } else if (code == KeyCode.F) {
             myBall.doubleSpeed();  // Double the speed of the ball
-        }
-        else if (code == KeyCode.P) {
+        } else if (code == KeyCode.P) {
             initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
+        } else if (code == KeyCode.L) {
+            numLives += 1;
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -107,6 +131,7 @@ public class SceneCreation extends Application {
 
         initializeBlocks(gameElements, input);
         initializeBall();
+        initializeText();
         powerUpArrayList = new ArrayList<>();
     }
 
@@ -147,12 +172,16 @@ public class SceneCreation extends Application {
     // Creates the scene to be put on the stage
     Scene createScene(int width, int height, Paint background) throws FileNotFoundException {
         myRoot = new Group();
-
         myPaddle = new Paddle();
         myRoot.getChildren().add(myPaddle);
         myBall = new Ball();
         myRoot.getChildren().add(myBall);
-//        initializeLevel(1);
+        lifeCounter = new Text();
+        myRoot.getChildren().add(lifeCounter);
+        myScoreDisplay = new Text();
+        myRoot.getChildren().add(myScoreDisplay);
+
+        //        initializeLevel(1);
         initializeLevel(2);
 
         myScene = new Scene(myRoot, width, height, background);
@@ -172,6 +201,43 @@ public class SceneCreation extends Application {
         checkBallMovements(elapsedTime);
         checkPowerUps(elapsedTime);
         checkPowerUpPaddleInteraction();
+        displayStatus();
+    }
+
+    // Updates the number of lives the user has
+    private void displayStatus() {
+
+        if (myBall.passBottomWall(myScene)) {
+            removeALife();
+        }
+        lifeCounter.setText("Lives Remaining: " + numLives);
+
+        if (blockArrayList.isEmpty() || numLives <= 0) {
+            displayFinalStatus();
+        }
+
+    }
+
+    // Displays the final status of the game
+    private void displayFinalStatus() {
+        gameOverMessage = new Text();
+        myRoot.getChildren().add(gameOverMessage);
+        myRoot.getChildren().remove(lifeCounter);
+
+        gameOverMessage.setX(SCENE_WIDTH / 4 - 10);
+        gameOverMessage.setY(SCENE_HEIGHT / 2);
+        gameOverMessage.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 60));
+        gameOverMessage.setStrokeWidth(3);
+        gameOverMessage.setStroke(Color.BLACK);
+
+
+        if (blockArrayList.isEmpty()) {
+            gameOverMessage.setText("You Win!");
+            gameOverMessage.setFill(Color.GREEN);
+        } else {
+            gameOverMessage.setText("You Lose.");
+            gameOverMessage.setFill(Color.RED);
+        }
     }
 
     private void checkBallMovements(double elapsedTime) {
@@ -201,6 +267,10 @@ public class SceneCreation extends Application {
         // Normal ball movement calls
         myBall.moveVertical(elapsedTime);
         myBall.moveLateral(elapsedTime);
+    }
+
+    private void removeALife() {
+        numLives = numLives-1;
     }
 
     private void checkBallPaddleInteraction() {
@@ -262,9 +332,15 @@ public class SceneCreation extends Application {
             // Remove eliminated blocks from blockArrayList
         for (Shape eliminatedBlock : toRemove) {
             blockArrayList.remove(eliminatedBlock);
+            updateScore();
         }
 
 
+    }
+
+    private void updateScore() {
+        myScore += 10;
+        myScoreDisplay.setText("Score: " + myScore);
     }
 
     private void generatePowerUpBlockCollision(Block block) {
