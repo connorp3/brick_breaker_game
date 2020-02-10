@@ -46,6 +46,7 @@ public class SceneCreation extends Application {
     private Text lifeCounter;
     private Text gameOverMessage;
     private Text myScoreDisplay;
+    private Text levelCounter;
     private boolean moveR;
     private boolean moveL;
     private boolean checkShootBall;
@@ -56,6 +57,7 @@ public class SceneCreation extends Application {
     private boolean powerUpExists;
     private int numLives;
     private int myScore;
+    private int currentLevel;
 
     public int getBlockArrayListSize() {
         return blockArrayList.size();
@@ -70,10 +72,15 @@ public class SceneCreation extends Application {
         lifeCounter.setText("Lives Remaining: " + numLives);
 
         myScore = 0;
-        myScoreDisplay.setX(SCENE_WIDTH - 100);
+        myScoreDisplay.setX(SCENE_WIDTH - 75);
         myScoreDisplay.setY(20);
         myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
         myScoreDisplay.setText("Score: " + myScore);
+
+        levelCounter.setX(SCENE_WIDTH / 2);
+        levelCounter.setY(20);
+        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        levelCounter.setText("Level: " + currentLevel);
     }
 
     // Method to handle key presses input by the user
@@ -180,9 +187,13 @@ public class SceneCreation extends Application {
         myRoot.getChildren().add(lifeCounter);
         myScoreDisplay = new Text();
         myRoot.getChildren().add(myScoreDisplay);
+        levelCounter = new Text();
+        myRoot.getChildren().add(levelCounter);
 
-        //        initializeLevel(1);
-        initializeLevel(2);
+
+        currentLevel = 1;
+        initializeLevel(currentLevel);
+//        initializeLevel(2);
 
         myScene = new Scene(myRoot, width, height, background);
         myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
