@@ -16,7 +16,11 @@ import javafx.util.Duration;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
+
+import static breakout.Block.HEIGHT;
+import static breakout.Block.WIDTH;
 
 public class SceneCreation extends Application {
 
@@ -41,6 +45,7 @@ public class SceneCreation extends Application {
     private boolean resetBall;
     private boolean stuckToPaddle;
     private ArrayList<Block> blockArrayList;
+    private ArrayList<PowerUp> powerUpArrayList;
     private boolean powerUpExists;
 
     public int getBlockArrayListSize() {
@@ -98,6 +103,7 @@ public class SceneCreation extends Application {
 
         initializeBlocks(gameElements, input);
         initializeBall();
+        powerUpArrayList = new ArrayList<>();
     }
 
     // Method to reset ball where it is stuck to paddle
@@ -160,6 +166,8 @@ public class SceneCreation extends Application {
         checkBallPaddleInteraction();
         checkPaddleMovements();
         checkBallMovements(elapsedTime);
+        checkPowerUps(elapsedTime);
+        checkPowerUpPaddleInteraction();
     }
 
     private void checkBallMovements(double elapsedTime) {
@@ -228,6 +236,7 @@ public class SceneCreation extends Application {
             if (Shape.intersect(block, myBall).getBoundsInLocal().getWidth() != -1 &&
                     Shape.intersect(block, myBall).getBoundsInLocal().getHeight() < Shape.intersect(block, myBall).getBoundsInLocal().getWidth()) {
                 myBall.verticalCollision();
+                generatePowerUp(block);
                 block.eliminateBlock(myRoot);
                 if (block.isBlockDestroyed()) {
                     toRemove.add(block);
@@ -237,6 +246,7 @@ public class SceneCreation extends Application {
         for (Block block : blockArrayList) {
             if (Shape.intersect(block, myBall).getBoundsInLocal().getHeight() != -1 && Shape.intersect(block, myBall).getBoundsInLocal().getHeight() > Shape.intersect(block, myBall).getBoundsInLocal().getWidth()) {
                 myBall.horizontalCollision();
+                generatePowerUp(block);
                 block.eliminateBlock(myRoot);
                 if (block.isBlockDestroyed()) {
                     toRemove.add(block);
@@ -247,9 +257,18 @@ public class SceneCreation extends Application {
             // Remove eliminated blocks from blockArrayList
         for (Shape eliminatedBlock : toRemove) {
             blockArrayList.remove(eliminatedBlock);
-            if (eliminatedBlock instanceof PowerUpBlock) {
-                powerUpExists = true;
-            }
+        }
+
+
+    }
+
+    private void generatePowerUp(Block block) {
+        Random rand = new Random();
+        int rand_int = rand.nextInt(3);
+        if (rand_int == 0) {
+            PowerUp powerUp = new PowerUp(block.getX() + WIDTH / 2, block.getY() + HEIGHT);
+            myRoot.getChildren().add(powerUp);
+            powerUpArrayList.add(powerUp);
         }
     }
 
@@ -269,5 +288,28 @@ public class SceneCreation extends Application {
         moveL = false;
     }
 
-    
+    private void checkPowerUps(double elapsedTime) {
+        if(powerUpArrayList.size() > 0) {
+            for(PowerUp powerUp : powerUpArrayList) {
+                powerUp.moveDown(elapsedTime);
+            }
+        }
+    }
+
+    private void checkPowerUpPaddleInteraction() {
+        ArrayList<Shape> toRemove = new ArrayList<>();
+
+        for(PowerUp powerUp : powerUpArrayList) {
+            if(Shape.intersect(powerUp, myPaddle).getBoundsInLocal().getHeight() != -1) {
+                powerUp.lengthenPaddle(myPaddle);
+                powerUp.eliminatePowerUp(myRoot);
+                toRemove.add(powerUp);
+            }
+        }
+
+        for (Shape powerUp : toRemove) {
+            powerUpArrayList.remove(powerUp);
+        }
+
+    }
 }
