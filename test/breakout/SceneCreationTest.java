@@ -1,6 +1,7 @@
 package breakout;
 
 import java.io.FileNotFoundException;
+import java.util.concurrent.TimeUnit;
 
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
@@ -18,9 +19,9 @@ public class SceneCreationTest extends DukeApplicationTest {
     private static final int X_BLOCK_GAP = 2;
     private static final int Y_BLOCK_GAP = 2;
     private static final int STARTING_Y_BLOCK_POS = 50;
-    private static final int STARTING_X_BLOCK_POS = 6;
+    private static final int STARTING_X_BLOCK_POS = 16;
     private static final int BLOCK_HEIGHT = 20;
-    private static final int BLOCK_WIDTH = 25;
+    private static final int BLOCK_WIDTH = 50;
     private final SceneCreation mySceneCreation = new SceneCreation();
 
     private Scene myScene;
@@ -41,7 +42,7 @@ public class SceneCreationTest extends DukeApplicationTest {
 
     @Test
     public void testPaddleInitialPosition() {
-        assertEquals(250, myPaddle.getX());
+        assertEquals(245, myPaddle.getX());
         assertEquals(430, myPaddle.getY());
         assertEquals(60, myPaddle.getWidth());
         assertEquals(5, myPaddle.getHeight());
@@ -57,6 +58,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     @Test
     public void testBallMove() {
         //sleep(1, TimeUnit.SECONDS);
+        press(myScene, KeyCode.UP);
         mySceneCreation.update(SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         // Tests to see if the ball has moved from its starting position
@@ -174,24 +176,99 @@ public class SceneCreationTest extends DukeApplicationTest {
     public void testFirstInEachRowBlockPosition() {
 
         Rectangle keyBlock1 = lookup("#block_1").query();
+        Rectangle keyBlock11 = lookup("#block_11").query();
         Rectangle keyBlock21 = lookup("#block_21").query();
+        Rectangle keyBlock31 = lookup("#block_31").query();
         Rectangle keyBlock41 = lookup("#block_41").query();
-        Rectangle keyBlock61 = lookup("#block_61").query();
-        Rectangle keyBlock81 = lookup("#block_81").query();
 
         assertEquals(STARTING_X_BLOCK_POS, keyBlock1.getX());
         assertEquals(STARTING_Y_BLOCK_POS, keyBlock1.getY());
 
+        assertEquals(STARTING_X_BLOCK_POS, keyBlock11.getX());
+        assertEquals(STARTING_Y_BLOCK_POS + BLOCK_HEIGHT + Y_BLOCK_GAP, keyBlock11.getY());
+
         assertEquals(STARTING_X_BLOCK_POS, keyBlock21.getX());
-        assertEquals(STARTING_Y_BLOCK_POS + BLOCK_HEIGHT + Y_BLOCK_GAP, keyBlock21.getY());
+        assertEquals(STARTING_Y_BLOCK_POS + 2*(BLOCK_HEIGHT + Y_BLOCK_GAP), keyBlock21.getY());
+
+        assertEquals(STARTING_X_BLOCK_POS, keyBlock31.getX());
+        assertEquals(STARTING_Y_BLOCK_POS + 3*(BLOCK_HEIGHT + Y_BLOCK_GAP), keyBlock31.getY());
 
         assertEquals(STARTING_X_BLOCK_POS, keyBlock41.getX());
-        assertEquals(STARTING_Y_BLOCK_POS + 2*(BLOCK_HEIGHT + Y_BLOCK_GAP), keyBlock41.getY());
+        assertEquals(STARTING_Y_BLOCK_POS + 4*(BLOCK_HEIGHT + Y_BLOCK_GAP), keyBlock41.getY());
+    }
 
-        assertEquals(STARTING_X_BLOCK_POS, keyBlock61.getX());
-        assertEquals(STARTING_Y_BLOCK_POS + 3*(BLOCK_HEIGHT + Y_BLOCK_GAP), keyBlock61.getY());
+    @Test
 
-        assertEquals(STARTING_X_BLOCK_POS, keyBlock81.getX());
-        assertEquals(STARTING_Y_BLOCK_POS + 4*(BLOCK_HEIGHT + Y_BLOCK_GAP), keyBlock81.getY());
+    public void EasyBlockDestroyed() {
+        Rectangle keyBlock41 = lookup("#block_41").query();
+        setBallOnBlock(keyBlock41);
+
+        sleep(1, TimeUnit.SECONDS);
+
+        javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+
+        assertEquals(49, mySceneCreation.getBlockArrayListSize());
+    }
+
+    @Test
+
+    public void MediumBlockDestroyed() {
+        MediumBlock keyBlock11 = lookup("#block_11").query();
+        for(int x = 0; x < keyBlock11.getHitLimit(); x++) {
+            setBallOnBlock(keyBlock11);
+            javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+        }
+
+        sleep(1, TimeUnit.SECONDS);
+
+        assertEquals(49, mySceneCreation.getBlockArrayListSize());
+    }
+
+    @Test
+    public void MediumBlockNotDestroyed() {
+        MediumBlock keyBlock11 = lookup("#block_11").query();
+        setBallOnBlock(keyBlock11);
+        javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+
+
+        sleep(1, TimeUnit.SECONDS);
+
+        assertEquals(50, mySceneCreation.getBlockArrayListSize());
+    }
+
+    @Test
+    public void HardBlockDestroyed() {
+        HardBlock keyBlock1 = lookup("#block_1").query();
+        for(int x = 0; x < keyBlock1.getHitLimit(); x++) {
+            setBallOnBlock(keyBlock1);
+            javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+        }
+
+        sleep(1, TimeUnit.SECONDS);
+
+        assertEquals(49, mySceneCreation.getBlockArrayListSize());
+    }
+
+    @Test
+    public void HardBlockNotDestroyed() {
+        HardBlock keyBlock1 = lookup("#block_1").query();
+        for(int x = 0; x < keyBlock1.getHitLimit()-1; x++) {
+            setBallOnBlock(keyBlock1);
+            javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+        }
+
+        sleep(1, TimeUnit.SECONDS);
+
+        assertEquals(50, mySceneCreation.getBlockArrayListSize());
+    }
+
+
+
+
+    private void setBallOnBlock(Rectangle block) {
+        double blockXPos = block.getX();
+        double blockYPos = block.getY();
+        myBall.setCenterX(blockXPos - myBall.getRadius());
+        myBall.setCenterY(blockYPos + BLOCK_HEIGHT/2);
     }
 }

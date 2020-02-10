@@ -11,4 +11,5 @@ public class MediumBlock extends Block {
         this.setFill(Color.LIGHTSKYBLUE);
         hitsLimit = 2;
     }
+
 }

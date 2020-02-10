@@ -6,10 +6,10 @@ import javafx.scene.shape.Rectangle;
 
 
 public class Paddle extends Rectangle {
-    private static final int X_POS = 250;
+    private static final int X_POS = 245;
     private static final int Y_POS = 430;
-    private static final int WIDTH = 60;
-    private static final int HEIGHT = 5;
+    private static final double WIDTH = 60;
+    private static final double HEIGHT = 5;
 
     public Paddle() {
 
@@ -37,6 +37,10 @@ public class Paddle extends Rectangle {
 
     public boolean lWallReached () {
         return this.getX() <= 0;
+    }
+
+    public void lengthenWidth() {
+        this.setWidth(WIDTH * 1.5);
     }
 
 }

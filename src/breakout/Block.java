@@ -12,8 +12,8 @@ import javafx.scene.shape.Rectangle;
 
 
 public class Block extends Rectangle {
-    private static final int WIDTH = 50;
-    private static final int HEIGHT = 20;
+    protected static final double WIDTH = 50;
+    protected static final double HEIGHT = 20;
     protected int hits;
     protected int hitsLimit;
 
@@ -43,5 +43,10 @@ public class Block extends Rectangle {
             return true;
         }
         return false;
+    }
+
+
+    public int getHitLimit() {
+        return hitsLimit;
     }
 }

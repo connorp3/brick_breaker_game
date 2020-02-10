@@ -41,6 +41,11 @@ public class SceneCreation extends Application {
     private boolean resetBall;
     private boolean stuckToPaddle;
     private ArrayList<Block> blockArrayList;
+    private boolean powerUpExists;
+
+    public int getBlockArrayListSize() {
+        return blockArrayList.size();
+    }
 
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
@@ -242,6 +247,9 @@ public class SceneCreation extends Application {
             // Remove eliminated blocks from blockArrayList
         for (Shape eliminatedBlock : toRemove) {
             blockArrayList.remove(eliminatedBlock);
+            if (eliminatedBlock instanceof PowerUpBlock) {
+                powerUpExists = true;
+            }
         }
     }
 
@@ -261,7 +269,5 @@ public class SceneCreation extends Application {
         moveL = false;
     }
 
-/*    private void collision(Shape gamePiece1, Shape gamePiece2) {
-        if gamePiece1.get
-    }*/
+    
 }
