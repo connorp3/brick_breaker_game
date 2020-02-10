@@ -1,6 +1,7 @@
 package breakout;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javafx.animation.Timeline;
@@ -12,6 +13,8 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import util.DukeApplicationTest;
 
+import static breakout.Block.HEIGHT;
+import static breakout.Block.WIDTH;
 import static breakout.SceneCreation.SECOND_DELAY;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +30,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     private Scene myScene;
     private Paddle myPaddle;
     private Ball myBall;
+    private ArrayList<PowerUp> powerUpArrayList;
     private Timeline myAnimation;
 
     @Override
@@ -101,6 +105,7 @@ public class SceneCreationTest extends DukeApplicationTest {
 
         assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
         assertEquals(myPaddle.getY() - myBall.getRadius() - 1, myBall.getCenterY());
+        assertEquals(60, myPaddle.getWidth());
     }
 
     @Test
@@ -262,13 +267,46 @@ public class SceneCreationTest extends DukeApplicationTest {
         assertEquals(50, mySceneCreation.getBlockArrayListSize());
     }
 
-
-
-
     private void setBallOnBlock(Rectangle block) {
         double blockXPos = block.getX();
         double blockYPos = block.getY();
         myBall.setCenterX(blockXPos - myBall.getRadius());
         myBall.setCenterY(blockYPos + BLOCK_HEIGHT/2);
     }
+
+    @Test
+    public void testPowerUpMove() {
+        press(myScene, KeyCode.P);
+
+        PowerUp powerUp = lookup("#powerUp").query();
+
+        double powerUpStartXPos = powerUp.getCenterX();
+        double powerUpStartYPos = powerUp.getCenterY();
+
+
+        mySceneCreation.update(SECOND_DELAY);
+
+
+
+
+        assertEquals(powerUp.getCenterX(), powerUpStartXPos);
+        assertEquals(true, powerUp.getCenterY() > powerUpStartYPos);
+
+    }
+
+    @Test
+    public void testPowerUpEffect() {
+        press(myScene, KeyCode.P);
+
+        PowerUp powerUp = lookup("#powerUp").query();
+
+        powerUp.setCenterX(myPaddle.getX());
+        powerUp.setCenterY(myPaddle.getY());
+
+        javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+
+        assertEquals(90, myPaddle.getWidth());
+    }
+
+
 }

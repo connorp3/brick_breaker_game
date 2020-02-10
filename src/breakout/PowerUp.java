@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class PowerUp extends Circle {
-    public static final double Y_VEL = 250;
+    public static final double Y_VEL = 225;
     public static final double RADIUS = 4;
 
     public PowerUp(double centerX, double centerY) {
@@ -13,6 +13,7 @@ public class PowerUp extends Circle {
         this.setCenterY(centerY);
         this.setRadius(RADIUS);
         this.setFill(Color.PURPLE);
+        this.setId("powerUp");
 
 
     }

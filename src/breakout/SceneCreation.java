@@ -52,6 +52,7 @@ public class SceneCreation extends Application {
         return blockArrayList.size();
     }
 
+
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
         if (code == KeyCode.RIGHT) {
@@ -67,6 +68,9 @@ public class SceneCreation extends Application {
             myBall.halfSpeed();  // Cut the overall speed of the ball in half //CGP19 created helper methods in ball class for these
         } else if (code == KeyCode.F) {
             myBall.doubleSpeed();  // Double the speed of the ball
+        }
+        else if (code == KeyCode.P) {
+            initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -240,7 +244,7 @@ public class SceneCreation extends Application {
                 block.eliminateBlock(myRoot);
                 if (block.isBlockDestroyed()) {
                     toRemove.add(block);
-                    generatePowerUp(block);
+                    generatePowerUpBlockCollision(block);
                 }
             }
         }
@@ -249,7 +253,7 @@ public class SceneCreation extends Application {
                 myBall.horizontalCollision();
                 block.eliminateBlock(myRoot);
                 if (block.isBlockDestroyed()) {
-                    generatePowerUp(block);
+                    generatePowerUpBlockCollision(block);
                     toRemove.add(block);
                 }
             }
@@ -263,14 +267,18 @@ public class SceneCreation extends Application {
 
     }
 
-    private void generatePowerUp(Block block) {
+    private void generatePowerUpBlockCollision(Block block) {
         Random rand = new Random();
         int rand_int = rand.nextInt(3);
         if (rand_int == 0) {
-            PowerUp powerUp = new PowerUp(block.getX() + WIDTH / 2, block.getY() + HEIGHT);
-            myRoot.getChildren().add(powerUp);
-            powerUpArrayList.add(powerUp);
+            initializePowerUp(block.getX() + WIDTH / 2, block.getY() + HEIGHT);
         }
+    }
+
+    private void initializePowerUp(double XPos, double YPos) {
+        PowerUp powerUp = new PowerUp(XPos, YPos);
+        myRoot.getChildren().add(powerUp);
+        powerUpArrayList.add(powerUp);
     }
 
     private void checkPaddleMovements() {
