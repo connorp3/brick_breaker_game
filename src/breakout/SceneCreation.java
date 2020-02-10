@@ -223,10 +223,11 @@ public class SceneCreation extends Application {
         gameOverMessage = new Text();
         myRoot.getChildren().add(gameOverMessage);
         myRoot.getChildren().remove(lifeCounter);
+        myAnimation.stop();
 
         gameOverMessage.setX(SCENE_WIDTH / 4 - 10);
         gameOverMessage.setY(SCENE_HEIGHT / 2);
-        gameOverMessage.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 60));
+        gameOverMessage.setFont(Font.font("veranda", FontWeight.BOLD, FontPosture.REGULAR, 60));
         gameOverMessage.setStrokeWidth(3);
         gameOverMessage.setStroke(Color.BLACK);
 
