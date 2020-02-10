@@ -33,7 +33,12 @@ public class Block extends Rectangle {
     //Removes block from game
     public void eliminateBlock(Group root) {
         hits++;
-            if(hits == hitsLimit) {
+
+            if (hitsLimit - hits == 2) {
+                this.setFill(Color.LIGHTSKYBLUE);
+            } else if (hitsLimit - hits == 1) {
+                this.setFill(Color.LIGHTSTEELBLUE);
+            } else if(hits == hitsLimit) {
                 root.getChildren().remove(this);
             }
     }
