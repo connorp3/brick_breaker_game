@@ -191,9 +191,8 @@ public class SceneCreation extends Application {
         myRoot.getChildren().add(levelCounter);
 
 
-        currentLevel = 1;
+        currentLevel = 2;
         initializeLevel(currentLevel);
-//        initializeLevel(2);
 
         myScene = new Scene(myRoot, width, height, background);
         myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
