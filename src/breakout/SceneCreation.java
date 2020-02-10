@@ -184,6 +184,7 @@ public class SceneCreation extends Application {
         // Calls method to reset the ball once it goes out of the bottom of the screen
         if(myBall.passBottomWall(myScene) || resetBall) {
             initializeBall();
+            myPaddle.restoreWidth();
         }
 
         // Shoots ball and returns ball to normal movement.
@@ -236,19 +237,19 @@ public class SceneCreation extends Application {
             if (Shape.intersect(block, myBall).getBoundsInLocal().getWidth() != -1 &&
                     Shape.intersect(block, myBall).getBoundsInLocal().getHeight() < Shape.intersect(block, myBall).getBoundsInLocal().getWidth()) {
                 myBall.verticalCollision();
-                generatePowerUp(block);
                 block.eliminateBlock(myRoot);
                 if (block.isBlockDestroyed()) {
                     toRemove.add(block);
+                    generatePowerUp(block);
                 }
             }
         }
         for (Block block : blockArrayList) {
             if (Shape.intersect(block, myBall).getBoundsInLocal().getHeight() != -1 && Shape.intersect(block, myBall).getBoundsInLocal().getHeight() > Shape.intersect(block, myBall).getBoundsInLocal().getWidth()) {
                 myBall.horizontalCollision();
-                generatePowerUp(block);
                 block.eliminateBlock(myRoot);
                 if (block.isBlockDestroyed()) {
+                    generatePowerUp(block);
                     toRemove.add(block);
                 }
             }

@@ -22,6 +22,7 @@ public class Paddle extends Rectangle {
         this.setId("paddle");
     }
 
+
     // Method to move the paddle to the right
     public void moveRight() { this.setX(this.getX() + 10); }
 
@@ -41,6 +42,10 @@ public class Paddle extends Rectangle {
 
     public void lengthenWidth() {
         this.setWidth(WIDTH * 1.5);
+    }
+
+    public void restoreWidth() {
+        this.setWidth(WIDTH);
     }
 
 }
