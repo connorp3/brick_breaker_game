@@ -59,29 +59,7 @@ public class SceneCreation extends Application {
     private int myScore;
     private int currentLevel;
 
-    public int getBlockArrayListSize() {
-        return blockArrayList.size();
-    }
 
-    public void initializeText() {
-        numLives = 3;
-
-        lifeCounter.setX(10);
-        lifeCounter.setY(20);
-        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
-        lifeCounter.setText("Lives Remaining: " + numLives);
-
-        myScore = 0;
-        myScoreDisplay.setX(SCENE_WIDTH - 75);
-        myScoreDisplay.setY(20);
-        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
-        myScoreDisplay.setText("Score: " + myScore);
-
-        levelCounter.setX(SCENE_WIDTH / 2);
-        levelCounter.setY(20);
-        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
-        levelCounter.setText("Level: " + currentLevel);
-    }
 
     // Method to handle key presses input by the user
     private void handleInput (KeyCode code) {
@@ -100,8 +78,10 @@ public class SceneCreation extends Application {
             myBall.doubleSpeed();  // Double the speed of the ball
         } else if (code == KeyCode.P) {
             initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
-        } else if (code == KeyCode.L) {
+        } else if (code == KeyCode.L) { // Add a life to the player's life count
             numLives += 1;
+        } else if (code == KeyCode.X) {
+            blockArrayList.clear();
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -129,6 +109,28 @@ public class SceneCreation extends Application {
         myAnimation.play();
     }
 
+    // Creates the scene to be put on the stage
+    Scene createScene(int width, int height, Paint background) throws FileNotFoundException {
+        myRoot = new Group();
+        myPaddle = new Paddle();
+        myRoot.getChildren().add(myPaddle);
+        myBall = new Ball();
+        myRoot.getChildren().add(myBall);
+        lifeCounter = new Text();
+        myRoot.getChildren().add(lifeCounter);
+        myScoreDisplay = new Text();
+        myRoot.getChildren().add(myScoreDisplay);
+        levelCounter = new Text();
+        myRoot.getChildren().add(levelCounter);
+
+        currentLevel = 3;
+        initializeLevel(currentLevel);
+
+        myScene = new Scene(myRoot, width, height, background);
+        myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
+        return myScene;
+    }
+
     // Initialize the elements of the game
     public void initializeLevel(int level) throws FileNotFoundException {
         ObservableList gameElements = myRoot.getChildren();
@@ -140,12 +142,6 @@ public class SceneCreation extends Application {
         initializeBall();
         initializeText();
         powerUpArrayList = new ArrayList<>();
-    }
-
-    // Method to reset ball where it is stuck to paddle
-    private void initializeBall() {
-        myBall.ballReset(myPaddle);
-        resetBall = true;
     }
 
     // Arrange the blocks based on the given configuration file
@@ -165,10 +161,14 @@ public class SceneCreation extends Application {
                 } else if (block.equals("3")) {
                     newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock);
                 } else {
-                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                    newBlock = new EmptyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
                 }
-                blockArrayList.add(newBlock);
-                gameElements.add(newBlock);
+
+                if (!block.equals("x")) {
+                    blockArrayList.add(newBlock);
+                    gameElements.add(newBlock);
+                }
+
                 xPosNextBlock += BLOCK_WIDTH + X_BLOCK_GAP;
                 blockCounter += 1;
             }
@@ -176,27 +176,31 @@ public class SceneCreation extends Application {
         }
     }
 
-    // Creates the scene to be put on the stage
-    Scene createScene(int width, int height, Paint background) throws FileNotFoundException {
-        myRoot = new Group();
-        myPaddle = new Paddle();
-        myRoot.getChildren().add(myPaddle);
-        myBall = new Ball();
-        myRoot.getChildren().add(myBall);
-        lifeCounter = new Text();
-        myRoot.getChildren().add(lifeCounter);
-        myScoreDisplay = new Text();
-        myRoot.getChildren().add(myScoreDisplay);
-        levelCounter = new Text();
-        myRoot.getChildren().add(levelCounter);
+    // Method to reset ball where it is stuck to paddle
+    private void initializeBall() {
+        myBall.ballReset(myPaddle);
+        resetBall = true;
+    }
 
+    // Initialize the status display of the game
+    public void initializeText() {
+        numLives = 3;
 
-        currentLevel = 2;
-        initializeLevel(currentLevel);
+        lifeCounter.setX(10);
+        lifeCounter.setY(20);
+        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        lifeCounter.setText("Lives Remaining: " + numLives);
 
-        myScene = new Scene(myRoot, width, height, background);
-        myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
-        return myScene;
+        myScore = 0;
+        myScoreDisplay.setX(SCENE_WIDTH - 75);
+        myScoreDisplay.setY(20);
+        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        myScoreDisplay.setText("Score: " + myScore);
+
+        levelCounter.setX(SCENE_WIDTH / 2);
+        levelCounter.setY(20);
+        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        levelCounter.setText("Level: " + currentLevel);
     }
 
     /**
@@ -407,5 +411,9 @@ public class SceneCreation extends Application {
             powerUpArrayList.remove(powerUp);
         }
 
+    }
+
+    public int getBlockArrayListSize() {
+        return blockArrayList.size();
     }
 }
