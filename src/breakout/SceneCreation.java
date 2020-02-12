@@ -28,6 +28,8 @@ import static breakout.Block.WIDTH;
 
 public class SceneCreation extends Application {
 
+    public static final int BLOCK_VAL = 10;
+    public static final int STATUS_DISPLAY_SIZE = 10;
     private static final int X_BLOCK_GAP = 2;
     private static final int Y_BLOCK_GAP = 2;
     private static final int STARTING_Y_BLOCK_POS = 50;
@@ -38,6 +40,8 @@ public class SceneCreation extends Application {
     public static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
     public static final int SCENE_WIDTH = 550;
     public static final int SCENE_HEIGHT = 450;
+    public static final int STATUS_DISPLAY_Y_POS = 20;
+    public static final int NUM_LIVES = 3;
     private Paddle myPaddle;
     private Ball myBall;
     private Group myRoot;
@@ -184,22 +188,22 @@ public class SceneCreation extends Application {
 
     // Initialize the status display of the game
     public void initializeText() {
-        numLives = 3;
+        numLives = NUM_LIVES;
 
         lifeCounter.setX(10);
-        lifeCounter.setY(20);
-        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        lifeCounter.setY(STATUS_DISPLAY_Y_POS);
+        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, STATUS_DISPLAY_SIZE));
         lifeCounter.setText("Lives Remaining: " + numLives);
 
         myScore = 0;
         myScoreDisplay.setX(SCENE_WIDTH - 75);
-        myScoreDisplay.setY(20);
-        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        myScoreDisplay.setY(STATUS_DISPLAY_Y_POS);
+        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, STATUS_DISPLAY_SIZE));
         myScoreDisplay.setText("Score: " + myScore);
 
         levelCounter.setX(SCENE_WIDTH / 2);
-        levelCounter.setY(20);
-        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        levelCounter.setY(STATUS_DISPLAY_Y_POS);
+        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, STATUS_DISPLAY_SIZE));
         levelCounter.setText("Level: " + currentLevel);
     }
 
@@ -354,7 +358,7 @@ public class SceneCreation extends Application {
     }
 
     private void updateScore() {
-        myScore += 10;
+        myScore += BLOCK_VAL;
         myScoreDisplay.setText("Score: " + myScore);
     }
 
