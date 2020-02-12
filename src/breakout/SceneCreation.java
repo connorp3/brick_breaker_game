@@ -51,7 +51,6 @@ public class SceneCreation extends Application {
     private boolean moveL;
     private boolean checkShootBall;
     private boolean resetBall;
-    private boolean stuckToPaddle;
     private ArrayList<Block> blockArrayList;
     private ArrayList<PowerUp> powerUpArrayList;
     private boolean powerUpExists;
@@ -188,19 +187,23 @@ public class SceneCreation extends Application {
 
         lifeCounter.setX(10);
         lifeCounter.setY(20);
-        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        setTextFont(lifeCounter, "verdana", 10);
         lifeCounter.setText("Lives Remaining: " + numLives);
 
         myScore = 0;
         myScoreDisplay.setX(SCENE_WIDTH - 75);
         myScoreDisplay.setY(20);
-        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        setTextFont(myScoreDisplay, "verdana", 10);
         myScoreDisplay.setText("Score: " + myScore);
 
         levelCounter.setX(SCENE_WIDTH / 2);
         levelCounter.setY(20);
-        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 10));
+        setTextFont(levelCounter, "verdana", 10);
         levelCounter.setText("Level: " + currentLevel);
+    }
+
+    private void setTextFont(Text currText, String fontType, int textSize) {
+        currText.setFont(Font.font(fontType, FontWeight.BOLD, FontPosture.REGULAR, textSize));
     }
 
     /**
@@ -241,7 +244,7 @@ public class SceneCreation extends Application {
 
         gameOverMessage.setX(SCENE_WIDTH / 4 - 10);
         gameOverMessage.setY(SCENE_HEIGHT / 2);
-        gameOverMessage.setFont(Font.font("veranda", FontWeight.BOLD, FontPosture.REGULAR, 60));
+        setTextFont(gameOverMessage, "veranda", 60);
         gameOverMessage.setStrokeWidth(3);
         gameOverMessage.setStroke(Color.BLACK);
 
@@ -389,7 +392,7 @@ public class SceneCreation extends Application {
     }
 
     private void checkPowerUps(double elapsedTime) {
-        if(powerUpArrayList.size() > 0) {
+        if(!powerUpArrayList.isEmpty()) {
             for(PowerUp powerUp : powerUpArrayList) {
                 powerUp.moveDown(elapsedTime);
             }

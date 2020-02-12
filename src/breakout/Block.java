@@ -44,10 +44,7 @@ public class Block extends Rectangle {
     }
 
     public boolean isBlockDestroyed() {
-        if(hits == hitsLimit) {
-            return true;
-        }
-        return false;
+        return (hits == hitsLimit);
     }
 
 
