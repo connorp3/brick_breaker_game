@@ -55,7 +55,6 @@ public class SceneCreation extends Application {
     private boolean moveL;
     private boolean checkShootBall;
     private boolean resetBall;
-    private boolean stuckToPaddle;
     private ArrayList<Block> blockArrayList;
     private ArrayList<PowerUp> powerUpArrayList;
     private boolean powerUpExists;
@@ -191,20 +190,25 @@ public class SceneCreation extends Application {
         numLives = NUM_LIVES;
 
         lifeCounter.setX(10);
-        lifeCounter.setY(STATUS_DISPLAY_Y_POS);
-        lifeCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, STATUS_DISPLAY_SIZE));
+        lifeCounter.setY(20);
+        setTextFont(lifeCounter, "verdana", STATUS_DISPLAY_SIZE);
         lifeCounter.setText("Lives Remaining: " + numLives);
 
         myScore = 0;
         myScoreDisplay.setX(SCENE_WIDTH - 75);
-        myScoreDisplay.setY(STATUS_DISPLAY_Y_POS);
-        myScoreDisplay.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, STATUS_DISPLAY_SIZE));
+
+        myScoreDisplay.setY(20);
+        setTextFont(myScoreDisplay, "verdana", STATUS_DISPLAY_SIZE);
         myScoreDisplay.setText("Score: " + myScore);
 
         levelCounter.setX(SCENE_WIDTH / 2);
-        levelCounter.setY(STATUS_DISPLAY_Y_POS);
-        levelCounter.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, STATUS_DISPLAY_SIZE));
+        levelCounter.setY(20);
+        setTextFont(levelCounter, "verdana", STATUS_DISPLAY_SIZE);
         levelCounter.setText("Level: " + currentLevel);
+    }
+
+    private void setTextFont(Text currText, String fontType, int textSize) {
+        currText.setFont(Font.font(fontType, FontWeight.BOLD, FontPosture.REGULAR, textSize));
     }
 
     /**
@@ -245,7 +249,7 @@ public class SceneCreation extends Application {
 
         gameOverMessage.setX(SCENE_WIDTH / 4 - 10);
         gameOverMessage.setY(SCENE_HEIGHT / 2);
-        gameOverMessage.setFont(Font.font("veranda", FontWeight.BOLD, FontPosture.REGULAR, 60));
+        setTextFont(gameOverMessage, "veranda", 60);
         gameOverMessage.setStrokeWidth(3);
         gameOverMessage.setStroke(Color.BLACK);
 
@@ -393,7 +397,7 @@ public class SceneCreation extends Application {
     }
 
     private void checkPowerUps(double elapsedTime) {
-        if(powerUpArrayList.size() > 0) {
+        if(!powerUpArrayList.isEmpty()) {
             for(PowerUp powerUp : powerUpArrayList) {
                 powerUp.moveDown(elapsedTime);
             }
