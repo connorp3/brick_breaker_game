@@ -13,8 +13,6 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import util.DukeApplicationTest;
 
-import static breakout.Block.HEIGHT;
-import static breakout.Block.WIDTH;
 import static breakout.SceneCreation.SECOND_DELAY;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +33,7 @@ public class SceneCreationTest extends DukeApplicationTest {
 
     @Override
     public void start (Stage stage) throws FileNotFoundException {
-        myScene = mySceneCreation.createScene(SceneCreation.SCENE_WIDTH, SceneCreation.SCENE_HEIGHT, Color.BEIGE);
+        myScene = mySceneCreation.createScene(SceneCreation.SCENE_WIDTH, SceneCreation.SCENE_HEIGHT, Color.BEIGE, 2);
         stage.setScene(myScene);
         stage.show();
 

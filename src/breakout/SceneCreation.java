@@ -100,9 +100,10 @@ public class SceneCreation extends Application {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
 
-        Scene scene = createScene(SCENE_WIDTH, SCENE_HEIGHT, Color.BEIGE);
+        Scene level1 = createScene(SCENE_WIDTH, SCENE_HEIGHT, Color.BEIGE, 1);
+
         primaryStage.setTitle("Breakout");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(level1);
         primaryStage.show();
 
         KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> update(SECOND_DELAY));
@@ -113,7 +114,7 @@ public class SceneCreation extends Application {
     }
 
     // Creates the scene to be put on the stage
-    Scene createScene(int width, int height, Paint background) throws FileNotFoundException {
+    Scene createScene(int width, int height, Paint background, int levelNum) throws FileNotFoundException {
         myRoot = new Group();
         myPaddle = new Paddle();
         myRoot.getChildren().add(myPaddle);
@@ -126,7 +127,7 @@ public class SceneCreation extends Application {
         levelCounter = new Text();
         myRoot.getChildren().add(levelCounter);
 
-        currentLevel = 3;
+        currentLevel = levelNum;
         initializeLevel(currentLevel);
 
         myScene = new Scene(myRoot, width, height, background);
@@ -299,7 +300,7 @@ public class SceneCreation extends Application {
     private void checkBallPaddleInteraction() {
         // Bounces the ball once it hits the paddle
         if(Shape.intersect(myBall, myPaddle).getBoundsInLocal().getWidth() != -1) {
-            whichThirdOfPaddle();
+//            whichThirdOfPaddle();
             myBall.verticalCollision();
 
         }
@@ -318,11 +319,11 @@ public class SceneCreation extends Application {
         }
     }
 
-    private void whichThirdOfPaddle() {
-        if (myBall.getCenterX() <= myPaddle.getX() + myPaddle.getWidth()/3 || myBall.getCenterX() >= myPaddle.getX() + 2*myPaddle.getWidth()/3) {
-            myBall.horizontalCollision();
-        }
-    }
+//    private void whichThirdOfPaddle() {
+//        if (myBall.getCenterX() <= myPaddle.getX() + myPaddle.getWidth()/3 || myBall.getCenterX() >= myPaddle.getX() + 2*myPaddle.getWidth()/3) {
+//            myBall.horizontalCollision();
+//        }
+//    }
 
     //Remove node from myRoot and bounce ball if it is a block and the ball hits the block
     private void checkBallBlockInteraction() {
