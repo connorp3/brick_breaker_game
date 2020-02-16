@@ -4,28 +4,28 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.junit.jupiter.api.Test;
 import util.DukeApplicationTest;
 
-import static breakout.Block.HEIGHT;
-import static breakout.Block.WIDTH;
-import static breakout.SceneCreation.SECOND_DELAY;
+import static breakout.GamePlay.SECOND_DELAY;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SceneCreationTest extends DukeApplicationTest {
+public class GamePlayTest extends DukeApplicationTest {
     private static final int X_BLOCK_GAP = 2;
     private static final int Y_BLOCK_GAP = 2;
     private static final int STARTING_Y_BLOCK_POS = 50;
     private static final int STARTING_X_BLOCK_POS = 16;
     private static final int BLOCK_HEIGHT = 20;
     private static final int BLOCK_WIDTH = 50;
-    private final SceneCreation mySceneCreation = new SceneCreation();
+    private final GamePlay mySceneCreation = new GamePlay();
 
     private Scene myScene;
     private Paddle myPaddle;
@@ -33,9 +33,11 @@ public class SceneCreationTest extends DukeApplicationTest {
     private ArrayList<PowerUp> powerUpArrayList;
     private Timeline myAnimation;
 
+
+
     @Override
     public void start (Stage stage) throws FileNotFoundException {
-        myScene = mySceneCreation.createScene(SceneCreation.SCENE_WIDTH, SceneCreation.SCENE_HEIGHT, Color.BEIGE);
+        myScene = mySceneCreation.createScene();
         stage.setScene(myScene);
         stage.show();
 
@@ -60,18 +62,18 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testBallMove() {
+    public void testBallMove() throws FileNotFoundException {
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.UP);
         mySceneCreation.update(SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         // Tests to see if the ball has moved from its starting position
-        assertTrue(myBall.getCenterX() != 275);
-        assertTrue(myBall.getCenterY() < 424);
+        assertTrue(myBall.getCenterX() != GamePlay.SCENE_WIDTH/2);
+        assertTrue(myBall.getCenterY() < GamePlay.SCENE_HEIGHT-1);
     }
 
     @Test
-    public void testPaddleMoveRight() {
+    public void testPaddleMoveRight() throws FileNotFoundException {
         myPaddle.setX(myScene.getWidth() / 2);
         myPaddle.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
@@ -83,7 +85,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testPaddleMoveLeft() {
+    public void testPaddleMoveLeft() throws FileNotFoundException {
         myPaddle.setX(myScene.getWidth() / 2);
         myPaddle.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
@@ -95,7 +97,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testBallReset () {
+    public void testBallReset () throws FileNotFoundException {
         myBall.verticalCollision();
         myBall.setCenterX(10);
         myBall.setCenterY(myScene.getHeight() + 1);
@@ -109,7 +111,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testShootBall () {
+    public void testShootBall () throws FileNotFoundException {
         // Start ball from the reset position.
         myBall.ballReset(myPaddle);
         // sleep(1, TimeUnit.SECONDS);
@@ -122,7 +124,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testCheatKeyR () {
+    public void testCheatKeyR () throws FileNotFoundException {
         // Set ball in arbitrary position that is not the start position
         myBall.setCenterX(100);
         myBall.setCenterY(100);
@@ -135,7 +137,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testCheatKeyS() {
+    public void testCheatKeyS() throws FileNotFoundException {
         mySceneCreation.update(SECOND_DELAY);
         double initXVel = myBall.getXVel();
         double initYVel = myBall.getYVel();
@@ -147,7 +149,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testCheatKeyF() {
+    public void testCheatKeyF() throws FileNotFoundException {
         mySceneCreation.update(SECOND_DELAY);
         double initXVel = myBall.getXVel();
         double initYVel = myBall.getYVel();
@@ -157,16 +159,22 @@ public class SceneCreationTest extends DukeApplicationTest {
         assertEquals(initXVel * 2, myBall.getXVel());
         assertEquals(initYVel * 2, myBall.getYVel());
     }
-/*    @Test
-    public void testCheatKeySpace () {
+    /*@Test
+    public void testCheatKeySpace () throws FileNotFoundException {
 
-        KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> mySceneCreation.update(SECOND_DELAY, myScene));
+        KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> {
+            try {
+                mySceneCreation.update(SECOND_DELAY);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        });
         myAnimation = new Timeline();
         myAnimation.setCycleCount(Timeline.INDEFINITE);
         myAnimation.getKeyFrames().add(frame);
 
         sleep(1, TimeUnit.SECONDS);
-        mySceneCreation.update(SECOND_DELAY, myScene);
+        mySceneCreation.update(SECOND_DELAY);
 
         press(myScene, KeyCode.SPACE);
 
@@ -205,66 +213,102 @@ public class SceneCreationTest extends DukeApplicationTest {
     @Test
 
     public void EasyBlockDestroyed() {
+        int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         Rectangle keyBlock41 = lookup("#block_41").query();
         setBallOnBlock(keyBlock41);
 
+
         sleep(1, TimeUnit.SECONDS);
 
-        javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+        javafxRun(() -> {
+            try {
+                mySceneCreation.update(SECOND_DELAY);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
-        assertEquals(49, mySceneCreation.getBlockArrayListSize());
+        assertEquals(startNumBlocks - 1, mySceneCreation.getBlockArrayListSize());
     }
 
     @Test
 
     public void MediumBlockDestroyed() {
+        int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         MediumBlock keyBlock11 = lookup("#block_11").query();
         for(int x = 0; x < keyBlock11.getHitLimit(); x++) {
             setBallOnBlock(keyBlock11);
-            javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+            javafxRun(() -> {
+                try {
+                    mySceneCreation.update(SECOND_DELAY);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         sleep(1, TimeUnit.SECONDS);
 
-        assertEquals(49, mySceneCreation.getBlockArrayListSize());
+        assertEquals(startNumBlocks - 1, mySceneCreation.getBlockArrayListSize());
     }
 
     @Test
     public void MediumBlockNotDestroyed() {
+        int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         MediumBlock keyBlock11 = lookup("#block_11").query();
         setBallOnBlock(keyBlock11);
-        javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+        javafxRun(() -> {
+            try {
+                mySceneCreation.update(SECOND_DELAY);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
 
         sleep(1, TimeUnit.SECONDS);
 
-        assertEquals(50, mySceneCreation.getBlockArrayListSize());
+        assertEquals(startNumBlocks, mySceneCreation.getBlockArrayListSize());
     }
 
     @Test
     public void HardBlockDestroyed() {
+        int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         HardBlock keyBlock1 = lookup("#block_1").query();
         for(int x = 0; x < keyBlock1.getHitLimit(); x++) {
             setBallOnBlock(keyBlock1);
-            javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+            javafxRun(() -> {
+                try {
+                    mySceneCreation.update(SECOND_DELAY);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         sleep(1, TimeUnit.SECONDS);
 
-        assertEquals(49, mySceneCreation.getBlockArrayListSize());
+        assertEquals(startNumBlocks - 1, mySceneCreation.getBlockArrayListSize());
     }
 
     @Test
     public void HardBlockNotDestroyed() {
+        int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         HardBlock keyBlock1 = lookup("#block_1").query();
         for(int x = 0; x < keyBlock1.getHitLimit()-1; x++) {
             setBallOnBlock(keyBlock1);
-            javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+            javafxRun(() -> {
+                try {
+                    mySceneCreation.update(SECOND_DELAY);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         sleep(1, TimeUnit.SECONDS);
 
-        assertEquals(50, mySceneCreation.getBlockArrayListSize());
+        assertEquals(startNumBlocks, mySceneCreation.getBlockArrayListSize());
     }
 
     private void setBallOnBlock(Rectangle block) {
@@ -275,7 +319,7 @@ public class SceneCreationTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testPowerUpMove() {
+    public void testPowerUpMove() throws FileNotFoundException {
         press(myScene, KeyCode.P);
 
         PowerUp powerUp = lookup("#powerUp").query();
@@ -303,10 +347,17 @@ public class SceneCreationTest extends DukeApplicationTest {
         powerUp.setCenterX(myPaddle.getX());
         powerUp.setCenterY(myPaddle.getY());
 
-        javafxRun(() -> mySceneCreation.update(SECOND_DELAY));
+        javafxRun(() -> {
+            try {
+                mySceneCreation.update(SECOND_DELAY);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
         assertEquals(90, myPaddle.getWidth());
     }
 
 
 }
+

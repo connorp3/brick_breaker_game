@@ -6,7 +6,7 @@ import javafx.application.Application;
 /**
  * Feel free to completely change this code or delete it entirely. 
  */
-public class Main extends SceneCreation {
+public class Main extends GamePlay {
     /**
      * Start of the program.
      */
