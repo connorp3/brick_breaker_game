@@ -92,16 +92,34 @@ public class GamePlay extends Application {
 
 
         myScene = new Scene(myRoot, SCENE_WIDTH, SCENE_HEIGHT, Color.BEIGE);
-        myScene.setOnKeyPressed(e -> handleInput(e.getCode()));
+        myScene.setOnKeyPressed(e -> {
+            try {
+                handleInput(e.getCode());
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        });
         return myScene;
     }
 
-    private void handleInput (KeyCode code) {
+    private void handleInput (KeyCode code) throws FileNotFoundException {
 // Reset ball to stick to paddle  //CGP19 changed this to boolean value. When I worked with a TA a few days ago, he said it was
             // a good idea to actually perform the actions of the key inputs in update and to use booleans here
           // Double the speed of the ball
         myPaddle.handleInput(code);
         myBall.handleInput(code, myPaddle);
+        if(code == KeyCode.DIGIT1) {
+            currentLevel = 1;
+            newLevel(1);
+        }
+        if(code == KeyCode.DIGIT2) {
+            currentLevel = 2;
+            newLevel(2);
+        }
+        if(code == KeyCode.DIGIT3) {
+            currentLevel = 3;
+            newLevel(3);
+        }
         if (code == KeyCode.P) {
             initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
         } else if (code == KeyCode.L) { // Add a life to the player's life count
@@ -198,12 +216,19 @@ public class GamePlay extends Application {
         checkPowerUpPaddleInteraction();
 
         if(blockArrayList.isEmpty()) {
-            currentLevel += 1;
-            myStatusDisplay.updateLevelDisplay(currentLevel);
-            initializeLevel(currentLevel);
+            currentLevel++;
+            newLevel(currentLevel);
         }
     }
 
+    private void newLevel(int newLevel) throws FileNotFoundException {
+        for(Block block : blockArrayList) {
+            gameElements.remove(block);
+        }
+        blockArrayList = new ArrayList<Block>();
+        myStatusDisplay.updateLevelDisplay(currentLevel);
+        initializeLevel(newLevel);
+    }
     private void checkBallPaddleInteraction() {
         // Bounces the ball once it hits the paddle
         BallPaddleCollision ballPaddleCollision = new BallPaddleCollision(myBall, myPaddle);
@@ -272,5 +297,9 @@ public class GamePlay extends Application {
             powerUpArrayList.remove(powerUp);
         }
 
+    }
+
+    public StatusDisplay getMyStatusDisplay() {
+        return myStatusDisplay;
     }
 }

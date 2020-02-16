@@ -22,29 +22,26 @@ public class StatusDisplay {
 
     public StatusDisplay(int lives) {
         numLives = lives;
-        lifeCounter = new Text();
-        lifeCounter.setX(10);
-        lifeCounter.setY(20);
-        setTextFont(lifeCounter, "verdana", STATUS_DISPLAY_SIZE);
-        lifeCounter.setText("Lives Remaining: " + numLives);
-
+        lifeCounter = createStatusPiece("Lives Remaining: ", numLives, 10, "lifeCounter");
         myScore = 0;
-        scoreDisplay = new Text();
-        scoreDisplay.setX(GamePlay.SCENE_WIDTH - 75);
-        scoreDisplay.setY(20);
-        setTextFont(scoreDisplay, "verdana", STATUS_DISPLAY_SIZE);
-        scoreDisplay.setText("Score: " + myScore);
-
+        scoreDisplay = createStatusPiece("Score: ", myScore, GamePlay.SCENE_WIDTH - 75, "scoreDisplay");
         currentLevel = 1;
-        levelCounter = new Text();
-        levelCounter.setX(GamePlay.SCENE_WIDTH / 2);
-        levelCounter.setY(20);
-        setTextFont(levelCounter, "verdana", STATUS_DISPLAY_SIZE);
-        levelCounter.setText("Level: " + currentLevel);
+        levelCounter = createStatusPiece("Level: ", currentLevel, GamePlay.SCENE_WIDTH / 2, "levelCounter");
+
     }
 
     private void setTextFont(Text currText, String fontType, int textSize) {
         currText.setFont(Font.font(fontType, FontWeight.BOLD, FontPosture.REGULAR, textSize));
+    }
+
+    private Text createStatusPiece(String message, int count, double xPos, String id) {
+        Text statusPiece = new Text();
+        statusPiece.setX(xPos);
+        statusPiece.setY(20);
+        setTextFont(statusPiece, "verdana", STATUS_DISPLAY_SIZE);
+        statusPiece.setText(message + count);
+        statusPiece.setId(id);
+        return statusPiece;
     }
 
     public void subtractLifeCounter(Ball ball) {
@@ -86,6 +83,8 @@ public class StatusDisplay {
     public int getNumLives() {
         return numLives;
     }
+
+    public int getMyScore() {return myScore;}
 
     public Text getScoreDisplay() {
         return scoreDisplay;
