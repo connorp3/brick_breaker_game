@@ -27,6 +27,7 @@ public class GamePlay extends Application {
     private Paddle myPaddle;
     private Ball myBall;
     private StatusDisplay myStatusDisplay;
+    private ArrayList<CollidableObject> myCollidables;
     private Text lifeCounter;
     private int numLives;
     private Text myScoreDisplay;
@@ -75,11 +76,13 @@ public class GamePlay extends Application {
 
     public Scene createScene() throws FileNotFoundException {
         myRoot = new Group();
+        myCollidables = new ArrayList<CollidableObject>();
         gameElements = myRoot.getChildren();
         myPaddle = new Paddle();
-        gameElements.add(myPaddle);
+        gameElements.add(myPaddle.getShape());
+        myCollidables.add(myPaddle);
         myBall = new Ball();
-        gameElements.add(myBall);
+        gameElements.add(myBall.getShape());
         StatusDisplay statusDisplay = new StatusDisplay(NUM_LIVES);
         myStatusDisplay = statusDisplay;
 
@@ -107,7 +110,7 @@ public class GamePlay extends Application {
             // a good idea to actually perform the actions of the key inputs in update and to use booleans here
           // Double the speed of the ball
         myPaddle.handleInput(code);
-        myBall.handleInput(code, myPaddle);
+        myBall.handleInput(code, myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
         if(code == KeyCode.DIGIT1) {
             currentLevel = 1;
             newLevel(1);
@@ -142,16 +145,16 @@ public class GamePlay extends Application {
         return blockArrayList.size();
     }
 
-    public void twoPlayer() {
+    /*public void twoPlayer() {
         pTwoPaddle = new Paddle();
         pTwoBall = new Ball();
         gameElements.add(pTwoPaddle);
         gameElements.add(pTwoBall);
-    }
+    }*/
 
     private void initializeLevel(int level) throws FileNotFoundException {
         initializeBlocks(level);
-        myBall.ballReset(myPaddle);
+        myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
         powerUpArrayList = new ArrayList<>();
     }
 
@@ -187,7 +190,8 @@ public class GamePlay extends Application {
 
     private void generateBlock(Block newBlock) {
         blockArrayList.add(newBlock);
-        gameElements.add(newBlock);
+        gameElements.add(newBlock.getShape());
+        myCollidables.add(newBlock);
     }
 
 
@@ -197,16 +201,16 @@ public class GamePlay extends Application {
      */
     public void update(double elapsedTime) throws FileNotFoundException {
         //CGP19 Split these methods up even more. Separated out interactions between game nodes.
-        checkBallBlockInteraction();
-        checkBallPaddleInteraction();
+        removeBlocks();
+        updateCollisions();
         myPaddle.update();
         myBall.update(elapsedTime);
 
         if(myBall.passBottomWall()) {
-            myBall.ballReset(myPaddle);
+            myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
             myStatusDisplay.subtractLifeCounter(myBall);
         }
-        myBall.updateResetBall(myPaddle);
+        myBall.updateResetBall(!myPaddle.lWallReached(), !myPaddle.rWallReached());
 
         if(myStatusDisplay.getNumLives() <= 0) {
             myStatusDisplay.displayLossStatus(gameElements, myAnimation);
@@ -223,26 +227,50 @@ public class GamePlay extends Application {
 
     private void newLevel(int newLevel) throws FileNotFoundException {
         for(Block block : blockArrayList) {
-            gameElements.remove(block);
+            gameElements.remove(block.getShape());
+            myCollidables.remove(block);
         }
-        blockArrayList = new ArrayList<Block>();
         myStatusDisplay.updateLevelDisplay(currentLevel);
         initializeLevel(newLevel);
     }
-    private void checkBallPaddleInteraction() {
-        // Bounces the ball once it hits the paddle
-        BallPaddleCollision ballPaddleCollision = new BallPaddleCollision(myBall, myPaddle);
-        ballPaddleCollision.collision();
+
+    private void removeBlocks() {
+        for(Block block : blockArrayList) {
+            if (block.getHits() >= block.getHitLimit()) {
+                blockArrayList.remove(block);
+                myStatusDisplay.updateScoreDisplay(BLOCK_VAL);
+                myCollidables.remove(block);
+
+            }
+        }
+    }
+    private void updateCollisions() {
+        boolean topHit = false;
+
+        for(CollidableObject collidableGameElement : myCollidables) {
+            if (CollidableObject.intersectsTop(collidableGameElement, myBall)) {
+                topHit = true;
+                myBall.collision(topHit);
+                collidableGameElement.collision(topHit);
+            }
+
+            if (CollidableObject.intersectsSide(collidableGameElement, myBall)) {
+                myBall.collision(topHit);
+                collidableGameElement.collision(topHit);
+            }
+        }
+
+
 
     }
 
     //Remove node from myRoot and bounce ball if it is a block and the ball hits the block
-    private void checkBallBlockInteraction() {
+    /*private void checkBallBlockInteraction() {
         // Create new list to keep track of blocks to remove from blockArrayList
         ArrayList<Shape> toRemove = new ArrayList<>();
 
         // If a block is hit, remove it from the myRoot group and add it to the toRemove list
-        for (Block block : blockArrayList) {
+        for (Shape block : blockArrayList) {
             BallBlockCollision ballBlockCollision = new BallBlockCollision(myBall, block, myRoot);
             ballBlockCollision.collision();
 
@@ -257,7 +285,7 @@ public class GamePlay extends Application {
             blockArrayList.remove(eliminatedBlock);
             myStatusDisplay.updateScoreDisplay(BLOCK_VAL);
         }
-    }
+    }*/
 
     private void generatePowerUpBlockCollision(Block block) {
         Random rand = new Random();
@@ -286,7 +314,7 @@ public class GamePlay extends Application {
         ArrayList<Shape> toRemove = new ArrayList<>();
 
         for(PowerUp powerUp : powerUpArrayList) {
-            if(Shape.intersect(powerUp, myPaddle).getBoundsInLocal().getHeight() != -1) {
+            if(Shape.intersect(powerUp, myPaddle.getShape()).getBoundsInLocal().getHeight() != -1) {
                 powerUp.lengthenPaddle(myPaddle);
                 powerUp.eliminatePowerUp(myRoot);
                 toRemove.add(powerUp);

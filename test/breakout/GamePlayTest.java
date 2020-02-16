@@ -38,8 +38,9 @@ public class GamePlayTest extends DukeApplicationTest {
     private ArrayList<PowerUp> powerUpArrayList;
     private Timeline myAnimation;
 
+}
 
-
+/*
     @Override
     public void start (Stage stage) throws FileNotFoundException {
         myScene = mySceneCreation.createScene();
@@ -170,7 +171,8 @@ public class GamePlayTest extends DukeApplicationTest {
         assertEquals(initXVel * 2, myBall.getXVel());
         assertEquals(initYVel * 2, myBall.getYVel());
     }
-    /*@Test
+    */
+/*@Test
     public void testCheatKeySpace () throws FileNotFoundException {
 
         KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> {
@@ -193,7 +195,8 @@ public class GamePlayTest extends DukeApplicationTest {
         // Tests to see if the ball has moved from its starting position
         assertTrue(myBall.getCenterX() == 275 + myBall.getXVel());
         assertTrue(myBall.getCenterY() == 424 + myBall.getYVel());
-    }*/
+    }*//*
+
 
 
     @Test
@@ -460,3 +463,4 @@ public class GamePlayTest extends DukeApplicationTest {
 
 }
 
+*/

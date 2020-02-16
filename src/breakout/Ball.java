@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import java.util.Random;
 
-public class Ball extends Circle {
+public class Ball extends CollidableObject {
     private double XVel;
     private double YVel;
     private Random rand = new Random();
@@ -19,27 +19,36 @@ public class Ball extends Circle {
     private boolean checkShootBall;
     private boolean moveL;
     private boolean moveR;
+    private Circle myCircle;
 
     public Ball() {
-        this.setCenterX(START_X_POS);
-        this.setCenterY(START_Y_POS);
-        this.setRadius(RADIUS);
-        this.setFill(Color.GOLD);
-        this.setStroke(Color.BLACK);
+        super();
+        myCircle = new Circle();
+        myCircle.setCenterX(START_X_POS);
+        myCircle.setCenterY(START_Y_POS);
+        myCircle.setRadius(RADIUS);
+        myCircle.setFill(Color.GOLD);
+        myCircle.setStroke(Color.BLACK);
         XVel = 0;
         YVel = 0;
         stuckToPaddle = false;
         resetBall = true;
         moveL = false;
         moveR = false;
-        this.setId("ball");
+        myCircle.setId("ball");
+
+        super.setShape(myCircle);
     }
 
-    public void handleInput(KeyCode code, Paddle paddle) {
+    public Circle getShape() {
+        return myCircle;
+    }
+
+    public void handleInput(KeyCode code, double xPos, double yPos, double Width) {
         if (code == KeyCode.UP && resetBall) { // Shoot ball from paddle
             checkShootBall = true;
         } else if (code == KeyCode.R) {
-            this.ballReset(paddle);
+            this.ballReset( xPos, yPos, Width);
         } else if (code == KeyCode.LEFT && resetBall) {
             moveL = true;
         } else if (code == KeyCode.RIGHT && resetBall) {
@@ -95,34 +104,34 @@ public class Ball extends Circle {
 
     // The default lateral movement for the ball
     public void moveLateral(double elapsedTime) {
-        this.setCenterX(this.getCenterX() + XVel * elapsedTime);
+        myCircle.setCenterX(myCircle.getCenterX() + XVel * elapsedTime);
     }
 
     // The default vertical movement for the ball
     public void moveVertical(double elapsedTime) {
-        this.setCenterY(this.getCenterY() + YVel * elapsedTime);
+        myCircle.setCenterY(myCircle.getCenterY() + YVel * elapsedTime);
     }
 
     // Allows ball to move in perfect sync with the paddle when the ball should be "stuck" to the paddle
-    public void moveRight() { this.setCenterX(this.getCenterX() + 10); }
+    public void moveRight() { myCircle.setCenterX(myCircle.getCenterX() + 10); }
 
     // Allows ball to move in perfect sync with the paddle when the ball should be "stuck" to the paddle
-    public void moveLeft() { this.setCenterX(this.getCenterX() - 10); }
+    public void moveLeft() { myCircle.setCenterX(myCircle.getCenterX() - 10); }
 
     // Returns whether the ball has passed the bottom wall of the window.
     public boolean passBottomWall() {
-        return this.getCenterY() >= GamePlay.SCENE_HEIGHT;
+        return myCircle.getCenterY() >= GamePlay.SCENE_HEIGHT;
     }
 
     // Returns whether the ball has collided with the top wall
     public boolean collideWithTopWall() {
-        return this.getCenterY() - this.getRadius() <= 0;
+        return myCircle.getCenterY() - myCircle.getRadius() <= 0;
     }
 
     // Returns whether the ball has collided with the side walls
     public boolean collideWithSideWalls() {
-        return this.getCenterX() + this.getRadius() >= GamePlay.SCENE_WIDTH ||
-                this.getCenterX() - this.getRadius() <= 0;
+        return myCircle.getCenterX() + myCircle.getRadius() >= GamePlay.SCENE_WIDTH ||
+                myCircle.getCenterX() - myCircle.getRadius() <= 0;
     }
     // Changes velocity upon hitting the side of the scene or a block (to be implemented)
     public void horizontalCollision() {
@@ -152,20 +161,20 @@ public class Ball extends Circle {
     }
 
     // Method to reset the ball and "stick" it to the paddle once it has passed the bottom wall.
-    public void updateResetBall(Paddle paddle) {
-        if(moveR && resetBall && !paddle.rWallReached()) {
+    public void updateResetBall(boolean hitLWall, boolean hitRWall) {
+        if(moveR && resetBall && hitRWall) {
             this.moveRight();
         }
-        if(moveL && resetBall && !paddle.lWallReached()) {
+        if(moveL && resetBall && hitLWall) {
             this.moveLeft();
         }
         moveR = false;
         moveL = false;
     }
 
-    public void ballReset(Paddle myPaddle) {
-        this.setCenterX(myPaddle.getX() + myPaddle.getWidth() / 2);
-        this.setCenterY(myPaddle.getY() - this.getRadius() - 1);
+    public void ballReset(double xPos, double yPos, double Width) {
+        myCircle.setCenterX(xPos + Width / 2);
+        myCircle.setCenterY(yPos - myCircle.getRadius() - 1);
         XVel = 0;
         YVel = 0;
         resetBall = true;
@@ -174,5 +183,17 @@ public class Ball extends Circle {
     // Used to randomize the direction of the ball
     public int getRandomInRange (int min, int max) {
         return min + rand.nextInt(max - min) + 1;
+    }
+
+
+    @Override
+    public void collision(boolean topHit) {
+        if(topHit) {
+            this.verticalCollision();
+        }
+
+        if(!topHit) {
+            this.horizontalCollision();
+        }
     }
 }

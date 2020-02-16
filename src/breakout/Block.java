@@ -1,8 +1,11 @@
 package breakout;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 
 /**
@@ -11,35 +14,67 @@ import javafx.scene.shape.Rectangle;
  */
 
 
-public class Block extends Rectangle {
+class Block extends CollidableObject {
     protected static final double WIDTH = 50;
     protected static final double HEIGHT = 20;
+    protected Rectangle myRectangle;
     protected int hits;
     protected int hitsLimit;
+    protected ObservableList<Node> myGameElements;
 
-    //CGP19 I changed this to extend Rectangle; I don't think we are planning on having blocks that
-    //aren't rectangle shaped, so this makes the functionality of the blocks easier to work with
+    //CGP19 I changed myRectangle to extend Rectangle; I don't think we are planning on having blocks that
+    //aren't rectangle shaped, so myRectangle makes the functionality of the blocks easier to work with
     public Block(int whichOne, int xPos, int yPos) {
-        this.setWidth(WIDTH);
-        this.setHeight(HEIGHT);
-        this.setX(xPos);
-        this.setY(yPos);
-        this.setStroke(Color.BLACK);
-        this.setId("block_" + whichOne);
+        super();
+        myRectangle = new Rectangle();
+        
+        myRectangle.setWidth(WIDTH);
+        myRectangle.setHeight(HEIGHT);
+        myRectangle.setX(xPos);
+        myRectangle.setY(yPos);
+        myRectangle.setStroke(Color.BLACK);
+        myRectangle.setId("block_" + whichOne);
         hits = 0;
+
+        super.setShape(myRectangle);
 
     }
 
+    public Shape getShape() {
+        return myRectangle;
+    }
+
+    public double getWidth() {
+        return myRectangle.getWidth();
+    }
+
+    public double getHeight() {
+        return myRectangle.getHeight();
+    }
+
+    public double getX() {
+        return myRectangle.getX();
+    }
+
+    public double getY() {
+        return myRectangle.getY();
+    }
+
+    public int getHits() {
+        return hits;
+    }
+
     //Removes block from game
-    public void eliminateBlock(Group root) {
+    public void eliminateBlock() {
         hits++;
 
             if (hitsLimit - hits == 2) {
-                this.setFill(Color.LIGHTSKYBLUE);
+                myRectangle.setFill(Color.LIGHTSKYBLUE);
             } else if (hitsLimit - hits == 1) {
-                this.setFill(Color.LIGHTSTEELBLUE);
+                myRectangle.setFill(Color.LIGHTSTEELBLUE);
             } else if(hits == hitsLimit) {
-                root.getChildren().remove(this);
+                myRectangle.setVisible(false);
+
             }
     }
 
@@ -50,5 +85,10 @@ public class Block extends Rectangle {
 
     public int getHitLimit() {
         return hitsLimit;
+    }
+
+    @Override
+    public void collision(boolean topHit) {
+        this.eliminateBlock();
     }
 }
