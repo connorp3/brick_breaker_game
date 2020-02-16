@@ -15,7 +15,7 @@ import javafx.util.Duration;
 import org.junit.jupiter.api.Test;
 import util.DukeApplicationTest;
 
-import static breakout.GamePlay.SECOND_DELAY;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GamePlayTest extends DukeApplicationTest {
@@ -38,6 +38,7 @@ public class GamePlayTest extends DukeApplicationTest {
     @Override
     public void start (Stage stage) throws FileNotFoundException {
         myScene = mySceneCreation.createScene();
+
         stage.setScene(myScene);
         stage.show();
 
@@ -65,7 +66,7 @@ public class GamePlayTest extends DukeApplicationTest {
     public void testBallMove() throws FileNotFoundException {
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.UP);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         // Tests to see if the ball has moved from its starting position
         assertTrue(myBall.getCenterX() != GamePlay.SCENE_WIDTH/2);
@@ -78,7 +79,7 @@ public class GamePlayTest extends DukeApplicationTest {
         myPaddle.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.RIGHT);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         assertEquals(myScene.getWidth()/2 + 10, myPaddle.getX());
         assertEquals(myScene.getHeight()/2, myPaddle.getY());
@@ -90,7 +91,7 @@ public class GamePlayTest extends DukeApplicationTest {
         myPaddle.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.LEFT);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
         assertEquals(myScene.getWidth()/2 - 10, myPaddle.getX());
         assertEquals(myScene.getHeight()/2, myPaddle.getY());
@@ -102,7 +103,7 @@ public class GamePlayTest extends DukeApplicationTest {
         myBall.setCenterX(10);
         myBall.setCenterY(myScene.getHeight() + 1);
         //sleep(1, TimeUnit.SECONDS);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         //sleep(1, TimeUnit.SECONDS);
 
         assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
@@ -116,7 +117,7 @@ public class GamePlayTest extends DukeApplicationTest {
         myBall.ballReset(myPaddle);
         // sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.UP);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         // sleep(1, TimeUnit.SECONDS);
 
         assertTrue(myBall.getCenterX() != 275);
@@ -130,7 +131,7 @@ public class GamePlayTest extends DukeApplicationTest {
         myBall.setCenterY(100);
 
         press(myScene, KeyCode.R);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
 
         assertEquals(myPaddle.getX() + myPaddle.getWidth()/2, myBall.getCenterX());
         assertEquals(myPaddle.getY() - myBall.getRadius() - 1, myBall.getCenterY());
@@ -138,11 +139,11 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyS() throws FileNotFoundException {
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         double initXVel = myBall.getXVel();
         double initYVel = myBall.getYVel();
         press(myScene, KeyCode.S);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
 
         assertEquals(initXVel / 2, myBall.getXVel());
         assertEquals(initYVel / 2, myBall.getYVel());
@@ -150,11 +151,11 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyF() throws FileNotFoundException {
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
         double initXVel = myBall.getXVel();
         double initYVel = myBall.getYVel();
         press(myScene, KeyCode.F);
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
 
         assertEquals(initXVel * 2, myBall.getXVel());
         assertEquals(initYVel * 2, myBall.getYVel());
@@ -222,7 +223,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
         javafxRun(() -> {
             try {
-                mySceneCreation.update(SECOND_DELAY);
+                mySceneCreation.update(GamePlay.SECOND_DELAY);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -240,7 +241,7 @@ public class GamePlayTest extends DukeApplicationTest {
             setBallOnBlock(keyBlock11);
             javafxRun(() -> {
                 try {
-                    mySceneCreation.update(SECOND_DELAY);
+                    mySceneCreation.update(GamePlay.SECOND_DELAY);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -259,7 +260,7 @@ public class GamePlayTest extends DukeApplicationTest {
         setBallOnBlock(keyBlock11);
         javafxRun(() -> {
             try {
-                mySceneCreation.update(SECOND_DELAY);
+                mySceneCreation.update(GamePlay.SECOND_DELAY);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -279,7 +280,7 @@ public class GamePlayTest extends DukeApplicationTest {
             setBallOnBlock(keyBlock1);
             javafxRun(() -> {
                 try {
-                    mySceneCreation.update(SECOND_DELAY);
+                    mySceneCreation.update(GamePlay.SECOND_DELAY);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -299,7 +300,7 @@ public class GamePlayTest extends DukeApplicationTest {
             setBallOnBlock(keyBlock1);
             javafxRun(() -> {
                 try {
-                    mySceneCreation.update(SECOND_DELAY);
+                    mySceneCreation.update(GamePlay.SECOND_DELAY);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -328,7 +329,7 @@ public class GamePlayTest extends DukeApplicationTest {
         double powerUpStartYPos = powerUp.getCenterY();
 
 
-        mySceneCreation.update(SECOND_DELAY);
+        mySceneCreation.update(GamePlay.SECOND_DELAY);
 
 
 
@@ -349,7 +350,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
         javafxRun(() -> {
             try {
-                mySceneCreation.update(SECOND_DELAY);
+                mySceneCreation.update(GamePlay.SECOND_DELAY);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
