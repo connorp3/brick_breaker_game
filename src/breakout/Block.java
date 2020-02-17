@@ -1,20 +1,17 @@
 package breakout;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-
-import java.util.ArrayList;
-
 
 /**
  * Create a block to be placed around the screen
- * Block will be hit by ball
+ * Block will be hit by ball.
+ * This class extends CollidableObject so that collisions can be checked easier.
+ *
+ * @author cgp19, jmt86
  */
-
 
 class Block extends CollidableObject {
     protected static final double WIDTH = 50;
@@ -24,8 +21,6 @@ class Block extends CollidableObject {
     protected int hitsLimit;
     protected ObservableList<Node> myGameElements;
 
-    //CGP19 I changed myRectangle to extend Rectangle; I don't think we are planning on having blocks that
-    //aren't rectangle shaped, so myRectangle makes the functionality of the blocks easier to work with
     public Block(int whichOne, int xPos, int yPos, ObservableList<Node> gameElements) {
         super();
         myRectangle = new Rectangle();
@@ -43,32 +38,24 @@ class Block extends CollidableObject {
 
     }
 
+    // Return the shape of the block
     public Rectangle getRectangle() {
         return myRectangle;
     }
 
-    public double getWidth() {
-        return myRectangle.getWidth();
-    }
-
-    public double getHeight() {
-        return myRectangle.getHeight();
-    }
-
+    // Return the X position of the block
     public double getX() {
         return myRectangle.getX();
     }
 
+    // Return the y position of the block
     public double getY() {
         return myRectangle.getY();
     }
 
+    // Return the number of hits the block has taken
     public int getHits() {
         return hits;
-    }
-
-    public void setHits(int num) {
-        hits = num;
     }
 
     //Removes block from game
@@ -84,11 +71,7 @@ class Block extends CollidableObject {
             }
     }
 
-    public boolean isBlockDestroyed() {
-        return (hits == hitsLimit);
-    }
-
-
+    // Return the hit limit of the block based on what type it is
     public int getHitLimit() {
         return hitsLimit;
     }

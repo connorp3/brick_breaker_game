@@ -5,11 +5,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import java.util.Random;
 
+
+/**
+ * This class creates the ball that bounces around the screen. This class handles its own inputs
+ * and has methods to stick it to the paddle.
+ *
+ * @author cgp19, jmt86
+ */
 public class Ball extends CollidableObject {
     private double XVel;
     private double YVel;
     private double XStartVel;
-    private double YStartVel;
     private Random rand = new Random();
     private static final double START_X_POS = 275;
     private static final double START_Y_POS = 424;
@@ -46,8 +52,9 @@ public class Ball extends CollidableObject {
         return myCircle;
     }
 
+    // Handle the input to the ball (shoot ball, speed up, slow down, reset)
     public void handleInput(KeyCode code, double xPos, double yPos, double Width) {
-        if (code == KeyCode.UP && resetBall) { // Shoot ball from paddle
+        if (code == KeyCode.UP && resetBall) {
             checkShootBall = true;
         } else if (code == KeyCode.R) {
             this.ballReset( xPos, yPos, Width);
@@ -56,7 +63,7 @@ public class Ball extends CollidableObject {
         } else if (code == KeyCode.RIGHT && resetBall) {
             moveR = true;
         } else if (code == KeyCode.S) {
-            this.changeSpeed(0.5);  // Cut the overall speed of the ball in half //CGP19 created helper methods in ball class for these
+            this.changeSpeed(0.5);
         } else if (code == KeyCode.F) {
             this.changeSpeed(2.0);
         }
@@ -73,10 +80,6 @@ public class Ball extends CollidableObject {
             this.horizontalCollision();
         }
 
-
-        // Calls method to reset the ball once it goes out of the bottom of the screen
-
-
         // Shoots ball and returns ball to normal movement.
         if (checkShootBall) {
             this.shootBall();
@@ -88,15 +91,6 @@ public class Ball extends CollidableObject {
         this.moveVertical(elapsedTime);
         this.moveLateral(elapsedTime);
     }
-
-    //CGP19 The set velocity methods are no longer used. Duvall added to the design specification that using setters and getters
-    //was generally not good design, so I turned them into halfSpeed and doubleSpeed methods
-
-    // Set the X velocity for the ball
-    public void setXVel(double newXVel) { XVel = newXVel; }
-
-    // Set the Y velocity for the ball
-    public void setYVel(double newYVel) { YVel = newYVel; }
 
     // Get the X velocity of the ball
     public double getXVel() { return XVel; }
@@ -144,14 +138,13 @@ public class Ball extends CollidableObject {
         YVel = -YVel;
     }
 
-    //CGP19 Might be smart to combine these into one method that takes the speed increase as a parameter
+    // Change the speed of the ball with a desired multiplier
     public void changeSpeed(double multiplier) {
         if (Math.abs(XVel) >= Math.abs(XStartVel) * 0.5 && Math.abs(XVel) <= Math.abs(XStartVel) * 2.0) {
             XVel = multiplier * XVel;
             YVel = multiplier * YVel;
         }
     }
-
 
     // The method called when the ball is "shot" by the user.
     public void shootBall() {
@@ -173,6 +166,7 @@ public class Ball extends CollidableObject {
         moveL = false;
     }
 
+    // This method resets the ball to be stuck to the paddle
     public void ballReset(double xPos, double yPos, double Width) {
         myCircle.setCenterX(xPos + Width / 2);
         myCircle.setCenterY(yPos - myCircle.getRadius() - 1);
@@ -186,7 +180,7 @@ public class Ball extends CollidableObject {
         return min + rand.nextInt(max - min) + 1;
     }
 
-
+    // Updates the balls velocities based on the collision location with a collidable object
     @Override
     public void collision(boolean topHit) {
         if(topHit) {
