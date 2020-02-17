@@ -1,12 +1,15 @@
 package breakout;
 
 import javafx.collections.ObservableList;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.util.Random;
+
+/** This class represents the powerUps in the game, and once created, it moves down. If it collides with the paddle, it randomly chooses a specific powerup
+ * to perform in the game. This class extends collidableobject and implements what it does when it collides with the paddle in collision.
+ * @author cgp19, jmt86*/
 
 public class PowerUp extends CollidableObject{
     public static final double Y_VEL = 225;

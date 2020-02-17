@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -21,8 +20,10 @@ import javafx.util.Duration;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
+
+/**This is the main class that launches the JavaFX application, creates a scene, adds elements to the scene,
+ * and updates those elements as necessary based on interactions between those elements and key inputs.*/
 
 public class GamePlay extends Application {
     private Scene myScene;
@@ -35,8 +36,6 @@ public class GamePlay extends Application {
     private ArrayList<CollidableObject> myCollidables;
     private ArrayList<PowerUp> myPowerUps;
     private ObservableList<Node> gameElements;
-    private Paddle pTwoPaddle;
-    private Ball pTwoBall;
     private ArrayList<Block> blockArrayList;
     private Timeline myAnimation;
     private ArrayList<PowerUp> powerUpArrayList;
@@ -134,10 +133,6 @@ public class GamePlay extends Application {
         return myScene;
     }
 
-    public Paddle getPaddle() {
-        return myPaddle;
-    }
-
     public Ball getBall() {
         return myBall;
     }
@@ -147,9 +142,7 @@ public class GamePlay extends Application {
     public ArrayList<Block> getBlockArrayList() {return blockArrayList;}
 
     private void handleInput (KeyCode code) throws FileNotFoundException {
-// Reset ball to stick to paddle  //CGP19 changed this to boolean value. When I worked with a TA a few days ago, he said it was
-            // a good idea to actually perform the actions of the key inputs in update and to use booleans here
-          // Double the speed of the ball
+
         myPaddle.handleInput(code);
         myBall.handleInput(code, myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
 
@@ -208,12 +201,7 @@ public class GamePlay extends Application {
         return blockArrayList.size();
     }
 
-    /*public void twoPlayer() {
-        pTwoPaddle = new Paddle();
-        pTwoBall = new Ball();
-        gameElements.add(pTwoPaddle);
-        gameElements.add(pTwoBall);
-    }*/
+
 
     private void initializeLevel(int level) throws FileNotFoundException {
         initializeBlocks(level);
@@ -277,7 +265,6 @@ public class GamePlay extends Application {
      * @param elapsedTime
      */
     public void update(double elapsedTime) throws FileNotFoundException {
-        //CGP19 Split these methods up even more. Separated out interactions between game nodes.
         removeOneBlock = false;
         updateCollisions();
         removeBlocks();

@@ -6,6 +6,9 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
+/**This is a subclass of block that adds a powerup to the game root when it has been destroyed.
+ * @author cgp19, jmt86*/
+
 public class PowerUpBlock extends Block{
     private Ball myBall;
     private Paddle myPaddle;

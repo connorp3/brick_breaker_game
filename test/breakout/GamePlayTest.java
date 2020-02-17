@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javafx.animation.Timeline;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
@@ -20,12 +18,10 @@ import util.DukeApplicationTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GamePlayTest extends DukeApplicationTest {
-    private static final int X_BLOCK_GAP = 2;
     private static final int Y_BLOCK_GAP = 2;
     private static final int STARTING_Y_BLOCK_POS = 50;
     private static final int STARTING_X_BLOCK_POS = 16;
     private static final int BLOCK_HEIGHT = 20;
-    private static final int BLOCK_WIDTH = 50;
     private final GamePlay mySceneCreation = new GamePlay();
 
     private Scene myScene;
@@ -36,8 +32,6 @@ public class GamePlayTest extends DukeApplicationTest {
     private Text myLifeCounter;
     private Text myLevelCounter;
     private Text myScoreDisplay;
-    private ArrayList<PowerUp> powerUpArrayList;
-    private Timeline myAnimation;
 
 
 

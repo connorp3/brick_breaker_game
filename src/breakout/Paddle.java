@@ -3,7 +3,6 @@ package breakout;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 
 
 public class Paddle extends CollidableObject {
@@ -55,14 +54,6 @@ public class Paddle extends CollidableObject {
         return myRectangle.getY();
     }
 
-    public void setX(double x) {
-         myRectangle.setX(x);
-    }
-
-    public void setY(double y) {
-        myRectangle.setX(y);
-    }
-
 
     public void handleInput(KeyCode code) {
         if (code == KeyCode.RIGHT) {
@@ -108,9 +99,6 @@ public class Paddle extends CollidableObject {
         myRectangle.setWidth(WIDTH * multiplier);
     }
 
-    public void restoreWidth() {
-        myRectangle.setWidth(WIDTH);
-    }
 
     @Override
     public void collision(boolean topHit) {
