@@ -26,7 +26,7 @@ class Block extends CollidableObject {
 
     //CGP19 I changed myRectangle to extend Rectangle; I don't think we are planning on having blocks that
     //aren't rectangle shaped, so myRectangle makes the functionality of the blocks easier to work with
-    public Block(int whichOne, int xPos, int yPos) {
+    public Block(int whichOne, int xPos, int yPos, ObservableList<Node> gameElements) {
         super();
         myRectangle = new Rectangle();
         myRectangle.setVisible(false);
@@ -37,6 +37,7 @@ class Block extends CollidableObject {
         myRectangle.setStroke(Color.BLACK);
         myRectangle.setId("block_" + whichOne);
         hits = 0;
+        myGameElements = gameElements;
 
         super.setShape(myRectangle);
 
@@ -79,7 +80,7 @@ class Block extends CollidableObject {
             } else if (hitsLimit - hits == 1) {
                 myRectangle.setFill(Color.LIGHTSTEELBLUE);
             } else if(hits >= hitsLimit) {
-                myRectangle.setVisible(false);
+                myGameElements.remove(myRectangle);
             }
     }
 

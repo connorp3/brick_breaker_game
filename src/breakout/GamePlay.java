@@ -115,10 +115,6 @@ public class GamePlay extends Application {
         myInstructions.setX(GamePlay.SCENE_WIDTH / 2 - 200);
         myInstructions.setY(myTitle.getY() + 50);
         myInstructions.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
-
-
-
-
         gameElements.add(myTitle);
         gameElements.add(myInstructions);
 
@@ -144,6 +140,8 @@ public class GamePlay extends Application {
     public Ball getBall() {
         return myBall;
     }
+
+    public ObservableList<Node> getGameElements() {return gameElements;}
 
     public ArrayList<Block> getBlockArrayList() {return blockArrayList;}
 
@@ -239,13 +237,13 @@ public class GamePlay extends Application {
             for(String block : blockList) { //jmt86 - Determines which number is read and adds corresponding block
                 Block newBlock;
                 if (block.equals("1")) {
-                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
                     generateBlock(newBlock);
                 } else if (block.equals("2")) {
-                    newBlock = new MediumBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                    newBlock = new MediumBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
                     generateBlock(newBlock);
                 } else if (block.equals("3")) {
-                    newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock);
+                    newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
                     generateBlock(newBlock);
                 }
                 xPosNextBlock += Block.WIDTH + X_BLOCK_GAP;
@@ -281,7 +279,10 @@ public class GamePlay extends Application {
         myBall.updateResetBall(!myPaddle.lWallReached(), !myPaddle.rWallReached());
 
         if(myStatusDisplay.getNumLives() <= 0) {
-            myStatusDisplay.displayLossStatus(gameElements, myAnimation);
+            myStatusDisplay.displayFinalStatus(gameElements, myAnimation, false);
+        }
+        if(currentLevel > 3){
+            myStatusDisplay.displayFinalStatus(gameElements, myAnimation, true);
         }
 
         checkPowerUps(elapsedTime);
@@ -298,6 +299,7 @@ public class GamePlay extends Application {
             gameElements.remove(block.getRectangle());
             myCollidables.remove(block);
         }
+        blockArrayList.clear();
         myStatusDisplay.updateLevelDisplay(currentLevel);
         initializeLevel(newLevel);
     }

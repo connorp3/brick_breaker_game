@@ -17,6 +17,7 @@ public class StatusDisplay {
     private Text lifeCounter;
     private Text scoreDisplay;
     private Text levelCounter;
+    private Text gameOverMessage;
 
     public static final int STATUS_DISPLAY_SIZE = 10;
     public static final int BLOCK_VAL = 10;
@@ -70,19 +71,22 @@ public class StatusDisplay {
 
     }
 
-    public void displayLossStatus(ObservableList<Node> gameElements, Timeline animation) {
-        Text gameOverMessage = new Text();
-        gameOverMessage.setText("You Lose.");
-        gameOverMessage.setFill(Color.RED);
+    public void displayFinalStatus(ObservableList<Node> gameElements, Timeline myAnimation, boolean win) {
+        gameOverMessage = new Text();
+        setTextFont(gameOverMessage, "veranda", 60);
         gameOverMessage.setX(GamePlay.SCENE_WIDTH / 4 - 10);
         gameOverMessage.setY(GamePlay.SCENE_HEIGHT / 2);
-        setTextFont(gameOverMessage, "veranda", 60);
         gameOverMessage.setStrokeWidth(3);
         gameOverMessage.setStroke(Color.BLACK);
-
+        if(win) {
+            gameOverMessage.setText("You Win.\nClose Window");
+            gameOverMessage.setFill(Color.GREEN);
+        } else {
+            gameOverMessage.setText("You Lose.\nClose Window");
+            gameOverMessage.setFill(Color.RED);
+        }
         gameElements.add(gameOverMessage);
-        animation.stop();
-
+        myAnimation.stop();
     }
 
     public int getNumLives() {
@@ -103,4 +107,6 @@ public class StatusDisplay {
         return levelCounter;
     }
 
+    public void displayWinStatus(ObservableList<Node> gameElements) {
+    }
 }

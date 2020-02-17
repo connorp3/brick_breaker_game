@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Circle;
@@ -64,6 +65,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testPaddleInitialPosition() {
+        press(myScene, KeyCode.Z);
         assertEquals(245, myPaddleShape.getX());
         assertEquals(430, myPaddleShape.getY());
         assertEquals(60, myPaddleShape.getWidth());
@@ -72,6 +74,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testBallInitialPosition() {
+        press(myScene, KeyCode.Z);
         assertEquals(275, myBallShape.getCenterX());
         assertEquals(424, myBallShape.getCenterY());
         assertEquals(5, myBallShape.getRadius());
@@ -79,6 +82,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testBallMove() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         //sleep(1, TimeUnit.SECONDS);
         press(myScene, KeyCode.UP);
         mySceneCreation.update(GamePlay.SECOND_DELAY);
@@ -90,6 +94,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testPaddleMoveRight() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         myPaddleShape.setX(myScene.getWidth() / 2);
         myPaddleShape.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
@@ -102,6 +107,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testPaddleMoveLeft() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         myPaddleShape.setX(myScene.getWidth() / 2);
         myPaddleShape.setY(myScene.getHeight() / 2);
         //sleep(1, TimeUnit.SECONDS);
@@ -114,6 +120,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testBallReset () throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         myBallShape.setCenterY(1000);
         myBallShape.setCenterX(10);
         myBallShape.setCenterY(myScene.getHeight() + 1);
@@ -128,6 +135,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testShootBall () throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         // Start ball from the reset position.
         press(myScene, KeyCode.R);
         // sleep(1, TimeUnit.SECONDS);
@@ -141,6 +149,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyR () throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         // Set ball in arbitrary position that is not the start position
         myBallShape.setCenterX(100);
         myBallShape.setCenterY(100);
@@ -154,6 +163,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyS() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.UP);
         mySceneCreation.update(GamePlay.SECOND_DELAY);
 
@@ -172,6 +182,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testCheatKeyF() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.UP);
         mySceneCreation.update(GamePlay.SECOND_DELAY);
 
@@ -187,39 +198,10 @@ public class GamePlayTest extends DukeApplicationTest {
         assertEquals(2*initXVel, finalXVel);
         assertEquals(2*initYVel, finalYVel);
     }
-    
-/*
-@Test
-    public void testCheatKeySpace () throws FileNotFoundException {
-
-        KeyFrame frame = new KeyFrame(Duration.seconds(SECOND_DELAY), e -> {
-            try {
-                mySceneCreation.update(SECOND_DELAY);
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            }
-        });
-        myAnimation = new Timeline();
-        myAnimation.setCycleCount(Timeline.INDEFINITE);
-        myAnimation.getKeyFrames().add(frame);
-
-        sleep(1, TimeUnit.SECONDS);
-        mySceneCreation.update(SECOND_DELAY);
-
-        press(myScene, KeyCode.SPACE);
-
-
-        // Tests to see if the ball has moved from its starting position
-        assertTrue(myBallShape.getShape().getCenterX() == 275 + myBallShape.getXVel());
-        assertTrue(myBallShape.getShape().getCenterY() == 424 + myBallShape.getYVel());
-    }
-*/
-
-
 
     @Test
     public void testFirstInEachRowBlockPosition() {
-
+        press(myScene, KeyCode.Z);
         Rectangle keyBlock1 = lookup("#block_1").query();
         Rectangle keyBlock11 = lookup("#block_11").query();
         Rectangle keyBlock21 = lookup("#block_21").query();
@@ -245,6 +227,7 @@ public class GamePlayTest extends DukeApplicationTest {
     @Test
 
     public void EasyBlockDestroyed() {
+        press(myScene, KeyCode.Z);
         int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         Rectangle keyBlock41 = lookup("#block_41").query();
         setBallOnBlock(keyBlock41);
@@ -261,13 +244,15 @@ public class GamePlayTest extends DukeApplicationTest {
         });
 
         assertEquals(startNumBlocks - 1, mySceneCreation.getBlockArrayListSize());
-        assertEquals(false, keyBlock41.isVisible());
+        assertEquals(false, mySceneCreation.getGameElements().contains(keyBlock41));
     }
 
     @Test
 
     public void MediumBlockDestroyed() {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.DIGIT2);
+        press(myScene, KeyCode.Z);
         int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         Rectangle keyBlock11 = lookup("#block_11").query();
         for(int x = 0; x < 2; x++) {
@@ -285,12 +270,14 @@ public class GamePlayTest extends DukeApplicationTest {
         sleep(1, TimeUnit.SECONDS);
 
         assertEquals(startNumBlocks - 1, mySceneCreation.getBlockArrayListSize());
-        assertEquals(false, keyBlock11.isVisible());
+        assertEquals(false, mySceneCreation.getGameElements().contains(keyBlock11));
     }
 
     @Test
     public void MediumBlockNotDestroyed() {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.DIGIT2);
+        press(myScene, KeyCode.Z);
         int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         Rectangle keyBlock11 = lookup("#block_11").query();
         setBallOnBlock(keyBlock11);
@@ -312,7 +299,9 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void HardBlockDestroyed() {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.DIGIT2);
+        press(myScene, KeyCode.Z);
         int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         Rectangle keyBlock1 = lookup("#block_1").query();
         for(int x = 0; x < 3; x++) {
@@ -330,12 +319,14 @@ public class GamePlayTest extends DukeApplicationTest {
         sleep(1, TimeUnit.SECONDS);
 
         assertEquals(startNumBlocks - 1, mySceneCreation.getBlockArrayListSize());
-        assertEquals(false, keyBlock1.isVisible());
+        assertEquals(false, mySceneCreation.getGameElements().contains(keyBlock1));
     }
 
     @Test
     public void HardBlockNotDestroyed() {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.DIGIT2);
+        press(myScene, KeyCode.Z);
         int startNumBlocks = mySceneCreation.getBlockArrayListSize();
         Rectangle keyBlock1 = lookup("#block_1").query();
         for(int x = 0; x < 2; x++) {
@@ -357,6 +348,7 @@ public class GamePlayTest extends DukeApplicationTest {
     }
 
     private void setBallOnBlock(Rectangle block) {
+        press(myScene, KeyCode.Z);
         double blockXPos = block.getX();
         double blockYPos = block.getY();
         myBallShape.setCenterX(blockXPos - myBallShape.getRadius());
@@ -365,6 +357,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testPowerUpMove() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.P);
 
         PowerUp powerUp = lookup("#powerUp").query();
@@ -385,6 +378,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testPowerUpEffect() {
+        press(myScene, KeyCode.Z);
         press(myScene, KeyCode.P);
 
         PowerUp powerUp = lookup("#powerUp").query();
@@ -405,6 +399,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testStatusDisplayPosition() {
+        press(myScene, KeyCode.Z);
         assertEquals(10, myLifeCounter.getX());
         assertEquals(20, myLifeCounter.getY());
         assertEquals(GamePlay.SCENE_WIDTH - 75, myScoreDisplay.getX());
@@ -415,6 +410,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testLoseALife() throws FileNotFoundException {
+        press(myScene, KeyCode.Z);
         int startLives = myStatusDisplay.getNumLives();
         myBallShape.setCenterY(1000);
         mySceneCreation.update(GamePlay.SECOND_DELAY);
@@ -426,6 +422,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testIncreasePoints() {
+        press(myScene, KeyCode.Z);
         int startScore = myStatusDisplay.getMyScore();
         Rectangle keyBlock41 = lookup("#block_41").query();
         setBallOnBlock(keyBlock41);
@@ -446,6 +443,7 @@ public class GamePlayTest extends DukeApplicationTest {
 
     @Test
     public void testChangeLevel() {
+        press(myScene, KeyCode.Z);
         for(int blockNum = 1; blockNum <= 50; blockNum++){
             Rectangle keyBlock = lookup("#block_" + blockNum).query();
             setBallOnBlock(keyBlock);
@@ -492,7 +490,7 @@ public class GamePlayTest extends DukeApplicationTest {
         assertTrue(mySceneCreation.getBlockArrayList().get(40) instanceof EasyBlock);
     }
 
-
+    // NEED TO ADD: testRestartGame, testDKeyPress, testTitleScreen, 
 }
 
 
