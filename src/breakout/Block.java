@@ -7,6 +7,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+import java.util.ArrayList;
+
 
 /**
  * Create a block to be placed around the screen
@@ -40,7 +42,7 @@ class Block extends CollidableObject {
 
     }
 
-    public Shape getShape() {
+    public Rectangle getRectangle() {
         return myRectangle;
     }
 

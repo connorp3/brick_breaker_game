@@ -76,13 +76,13 @@ public class GamePlay extends Application {
 
     public Scene createScene() throws FileNotFoundException {
         myRoot = new Group();
-        myCollidables = new ArrayList<CollidableObject>();
+        myCollidables = new ArrayList();
         gameElements = myRoot.getChildren();
         myPaddle = new Paddle();
-        gameElements.add(myPaddle.getShape());
+        gameElements.add(myPaddle.getRectangle());
         myCollidables.add(myPaddle);
         myBall = new Ball();
-        gameElements.add(myBall.getShape());
+        gameElements.add(myBall.getCircle());
         StatusDisplay statusDisplay = new StatusDisplay(NUM_LIVES);
         myStatusDisplay = statusDisplay;
 
@@ -104,6 +104,16 @@ public class GamePlay extends Application {
         });
         return myScene;
     }
+
+    public Paddle getPaddle() {
+        return myPaddle;
+    }
+
+    public Ball getBall() {
+        return myBall;
+    }
+
+    public ArrayList<Block> getBlockArrayList() {return blockArrayList;}
 
     private void handleInput (KeyCode code) throws FileNotFoundException {
 // Reset ball to stick to paddle  //CGP19 changed this to boolean value. When I worked with a TA a few days ago, he said it was
@@ -127,8 +137,6 @@ public class GamePlay extends Application {
             initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
         } else if (code == KeyCode.L) { // Add a life to the player's life count
             numLives += 1;
-        } else if (code == KeyCode.X) {
-            blockArrayList.clear();
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -190,7 +198,7 @@ public class GamePlay extends Application {
 
     private void generateBlock(Block newBlock) {
         blockArrayList.add(newBlock);
-        gameElements.add(newBlock.getShape());
+        gameElements.add(newBlock.getRectangle());
         myCollidables.add(newBlock);
     }
 
@@ -201,8 +209,9 @@ public class GamePlay extends Application {
      */
     public void update(double elapsedTime) throws FileNotFoundException {
         //CGP19 Split these methods up even more. Separated out interactions between game nodes.
-        removeBlocks();
+
         updateCollisions();
+        removeBlocks();
         myPaddle.update();
         myBall.update(elapsedTime);
 
@@ -227,7 +236,7 @@ public class GamePlay extends Application {
 
     private void newLevel(int newLevel) throws FileNotFoundException {
         for(Block block : blockArrayList) {
-            gameElements.remove(block.getShape());
+            gameElements.remove(block.getRectangle());
             myCollidables.remove(block);
         }
         myStatusDisplay.updateLevelDisplay(currentLevel);
@@ -235,13 +244,17 @@ public class GamePlay extends Application {
     }
 
     private void removeBlocks() {
+        ArrayList<Block> toRemove = new ArrayList<>();
         for(Block block : blockArrayList) {
             if (block.getHits() >= block.getHitLimit()) {
-                blockArrayList.remove(block);
+                toRemove.add(block);
                 myStatusDisplay.updateScoreDisplay(BLOCK_VAL);
                 myCollidables.remove(block);
 
             }
+        }
+        for(Block block : toRemove) {
+            blockArrayList.remove(block);
         }
     }
     private void updateCollisions() {
@@ -314,7 +327,7 @@ public class GamePlay extends Application {
         ArrayList<Shape> toRemove = new ArrayList<>();
 
         for(PowerUp powerUp : powerUpArrayList) {
-            if(Shape.intersect(powerUp, myPaddle.getShape()).getBoundsInLocal().getHeight() != -1) {
+            if(Shape.intersect(powerUp, myPaddle.getRectangle()).getBoundsInLocal().getHeight() != -1) {
                 powerUp.lengthenPaddle(myPaddle);
                 powerUp.eliminatePowerUp(myRoot);
                 toRemove.add(powerUp);

@@ -11,7 +11,6 @@ public class Ball extends CollidableObject {
     private Random rand = new Random();
     private static final double START_X_POS = 275;
     private static final double START_Y_POS = 424;
-    private final double START_X_VEL = getRandomInRange(-100, 100);
     private static final double START_Y_VEL = -150;
     private static final double RADIUS = 5;
     private boolean stuckToPaddle;
@@ -40,7 +39,7 @@ public class Ball extends CollidableObject {
         super.setShape(myCircle);
     }
 
-    public Circle getShape() {
+    public Circle getCircle() {
         return myCircle;
     }
 

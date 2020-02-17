@@ -34,8 +34,8 @@ public class Paddle extends CollidableObject {
         super.setShape(myRectangle);
     }
 
-    public Shape getShape() {
-        return myShape;
+    public Rectangle getRectangle() {
+        return myRectangle;
     }
 
     public double getWidth() {
@@ -53,6 +53,15 @@ public class Paddle extends CollidableObject {
     public double getY() {
         return myRectangle.getY();
     }
+
+    public void setX(double x) {
+         myRectangle.setX(x);
+    }
+
+    public void setY(double y) {
+        myRectangle.setX(y);
+    }
+
 
     public void handleInput(KeyCode code) {
         if (code == KeyCode.RIGHT) {
@@ -104,6 +113,5 @@ public class Paddle extends CollidableObject {
 
     @Override
     public void collision(boolean topHit) {
-        
     }
 }
