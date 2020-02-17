@@ -23,7 +23,7 @@ public class PowerUp extends Circle {
     }
 
     public void lengthenPaddle(Paddle paddle) {
-        paddle.lengthenWidth();
+        paddle.changeWidth(1.5);
     }
 
     public void eliminatePowerUp(Group root) {

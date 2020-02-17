@@ -104,8 +104,8 @@ public class Paddle extends CollidableObject {
         return myRectangle.getX() <= 0;
     }
 
-    public void lengthenWidth() {
-        myRectangle.setWidth(WIDTH * 1.5);
+    public void changeWidth(double multiplier) {
+        myRectangle.setWidth(WIDTH * multiplier);
     }
 
     public void restoreWidth() {

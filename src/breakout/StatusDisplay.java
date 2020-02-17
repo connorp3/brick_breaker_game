@@ -78,15 +78,27 @@ public class StatusDisplay {
         gameOverMessage.setY(GamePlay.SCENE_HEIGHT / 2);
         gameOverMessage.setStrokeWidth(3);
         gameOverMessage.setStroke(Color.BLACK);
+
+        Text closeWindowMessage = new Text();
+        setTextFont(closeWindowMessage, "veranda", 30);
+        closeWindowMessage.setX(gameOverMessage.getX() - 30);
+        closeWindowMessage.setY(gameOverMessage.getY() + 50);
         if(win) {
-            gameOverMessage.setText("You Win.\nClose Window");
+            gameOverMessage.setText("You Win.");
             gameOverMessage.setFill(Color.GREEN);
+
         } else {
-            gameOverMessage.setText("You Lose.\nClose Window");
+            gameOverMessage.setText("You Lose.");
             gameOverMessage.setFill(Color.RED);
         }
+        showCloseWindowMessage(closeWindowMessage);
         gameElements.add(gameOverMessage);
+        gameElements.add(closeWindowMessage);
         myAnimation.stop();
+    }
+
+    private void showCloseWindowMessage(Text closeWindowMessage) {
+        closeWindowMessage.setText("Close window to restart.");
     }
 
     public int getNumLives() {

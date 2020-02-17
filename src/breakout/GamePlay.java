@@ -49,7 +49,6 @@ public class GamePlay extends Application {
 
     private static final Text LEVEL_TRANSITION = new Text();
     private static final String INSTRUCTIONS_TEXT =  "Connor Penny & John Taylor \n" +
-                                                    "Press Z to start \n" +
                                                     "Use Arrow Keys to move Paddle Left and Right \n" +
                                                     "Press Up Arrow to shoot Ball \n" +
                                                     "Press Space to Pause \n" +
@@ -66,6 +65,7 @@ public class GamePlay extends Application {
     public static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
     public static final int BLOCK_VAL = 10;
     public static final int NUM_LIVES = 3;
+    public static final int NUM_LEVELS = 3;
 
 
     @Override
@@ -109,6 +109,9 @@ public class GamePlay extends Application {
         myTitle.setText("BREAKOUT");
         myTitle.setX(GamePlay.SCENE_WIDTH / 2 - 200);
         myTitle.setY(GamePlay.SCENE_HEIGHT/2 - 100);
+        myTitle.setFill(Color.AQUAMARINE);
+        myTitle.setStroke(Color.BLACK);
+        myTitle.setStrokeWidth(3);
         myTitle.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 60));
         myInstructions = new Text();
         myInstructions.setText(INSTRUCTIONS_TEXT);
@@ -215,12 +218,16 @@ public class GamePlay extends Application {
         initializeBlocks(level);
         myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
         powerUpArrayList = new ArrayList<>();
+        showTransitionMessage();
+
+    }
+
+    private void showTransitionMessage() {
         LEVEL_TRANSITION.setText("PRESS Z TO CONTINUE");
         LEVEL_TRANSITION.setX(GamePlay.SCENE_WIDTH / 2);
-        LEVEL_TRANSITION.setY(GamePlay.SCENE_HEIGHT/2 + 200);
+        LEVEL_TRANSITION.setY(GamePlay.SCENE_HEIGHT/2 + 175);
         LEVEL_TRANSITION.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         gameElements.add(LEVEL_TRANSITION);
-
     }
 
     // Arrange the blocks based on the given configuration file
@@ -295,13 +302,17 @@ public class GamePlay extends Application {
     }
 
     private void newLevel(int newLevel) throws FileNotFoundException {
+        myPaddle.changeWidth(0.85/ (newLevel-1));
         for(Block block : blockArrayList) {
             gameElements.remove(block.getRectangle());
             myCollidables.remove(block);
         }
         blockArrayList.clear();
-        myStatusDisplay.updateLevelDisplay(currentLevel);
-        initializeLevel(newLevel);
+        if(currentLevel <= NUM_LEVELS) {
+            initializeLevel(newLevel);
+            myStatusDisplay.updateLevelDisplay(currentLevel);
+        }
+
     }
 
     private void removeBlocks() {
