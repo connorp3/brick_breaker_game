@@ -5,6 +5,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 
+/**
+ * This class outlines a Paddle to be controlled by the player. It takes in key inputs allowing
+ * it to move left and right, and it has the ability to shoot the ball. It extends the CollidableObject
+ * abstract class allowing it to check for collisions with the Ball and Power-Ups.
+ *
+ * @author cgp19, jmt86
+ */
 public class Paddle extends CollidableObject {
     private static final int X_POS = 245;
     private static final int Y_POS = 430;
@@ -34,22 +41,22 @@ public class Paddle extends CollidableObject {
         super.setShape(myRectangle);
     }
 
+    // returns the shape of the paddle
     public Rectangle getRectangle() {
         return myRectangle;
     }
 
+    // returns the width of the paddle
     public double getWidth() {
         return myRectangle.getWidth();
     }
 
-    public double getHeight() {
-        return myRectangle.getHeight();
-    }
-
+    // returns the x position of the paddle
     public double getX() {
         return myRectangle.getX();
     }
 
+    // returns the y position of the paddle
     public double getY() {
         return myRectangle.getY();
     }
@@ -63,6 +70,7 @@ public class Paddle extends CollidableObject {
         }
     }
 
+    // stops the paddle once it has reached a side wall
     public void update() {
         // Move the paddle to the right.
         if(moveR && !this.rWallReached()) {
@@ -78,15 +86,13 @@ public class Paddle extends CollidableObject {
         moveR = false;
         moveL = false;
     }
+
     // Method to move the paddle to the right
     public void moveRight() { myRectangle.setX(myRectangle.getX() + 10); }
 
     // Method to move the paddle to the left
-    public void moveLeft() {
-        myRectangle.setX(myRectangle.getX() - 10);
-    }
+    public void moveLeft() { myRectangle.setX(myRectangle.getX() - 10); }
 
-    //CGP19 I believe I extracted these methods from the update method to make it look a bit cleaner
     public boolean rWallReached () {
         return myRectangle.getX() + myRectangle.getWidth() >= GamePlay.SCENE_WIDTH;
     }
@@ -95,6 +101,7 @@ public class Paddle extends CollidableObject {
         return myRectangle.getX() <= 0;
     }
 
+    // Change the width of the paddle
     public void changeWidth(double multiplier) {
         myRectangle.setWidth(WIDTH * multiplier);
     }

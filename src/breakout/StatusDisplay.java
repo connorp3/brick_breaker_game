@@ -9,6 +9,13 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+/**
+ * This class handles the status display at the top of the game screen. It keeps track of the current level, the
+ * current score, and the number of lives the player has left. These values are all updated within this class by
+ * external calls from other classes.
+ *
+ * @author cgp19, jmt86
+ */
 public class StatusDisplay {
     private int myScore;
     private int numLives;
@@ -18,9 +25,9 @@ public class StatusDisplay {
     private Text scoreDisplay;
     private Text levelCounter;
     private Text gameOverMessage;
+    private Text closeWindowMessage;
 
     public static final int STATUS_DISPLAY_SIZE = 10;
-    public static final int BLOCK_VAL = 10;
 
     public StatusDisplay(int lives) {
         maxLives = lives;
@@ -73,16 +80,11 @@ public class StatusDisplay {
 
     public void displayFinalStatus(ObservableList<Node> gameElements, Timeline myAnimation, boolean win) {
         gameOverMessage = new Text();
-        setTextFont(gameOverMessage, "veranda", 60);
-        gameOverMessage.setX(GamePlay.SCENE_WIDTH / 4 - 10);
-        gameOverMessage.setY(GamePlay.SCENE_HEIGHT / 2);
-        gameOverMessage.setStrokeWidth(3);
-        gameOverMessage.setStroke(Color.BLACK);
+        createGameOverMessage();
 
-        Text closeWindowMessage = new Text();
-        setTextFont(closeWindowMessage, "veranda", 30);
-        closeWindowMessage.setX(gameOverMessage.getX() - 30);
-        closeWindowMessage.setY(gameOverMessage.getY() + 50);
+        closeWindowMessage = new Text();
+        createCloseWindowMessage();
+
         if(win) {
             gameOverMessage.setText("You Win.");
             gameOverMessage.setFill(Color.GREEN);
@@ -91,10 +93,25 @@ public class StatusDisplay {
             gameOverMessage.setText("You Lose.");
             gameOverMessage.setFill(Color.RED);
         }
+
         showCloseWindowMessage(closeWindowMessage);
         gameElements.add(gameOverMessage);
         gameElements.add(closeWindowMessage);
         myAnimation.stop();
+    }
+
+    private void createCloseWindowMessage() {
+        setTextFont(closeWindowMessage, "veranda", 30);
+        closeWindowMessage.setX(gameOverMessage.getX() - 30);
+        closeWindowMessage.setY(gameOverMessage.getY() + 50);
+    }
+
+    private void createGameOverMessage() {
+        setTextFont(gameOverMessage, "veranda", 60);
+        gameOverMessage.setX(GamePlay.SCENE_WIDTH / 4 - 10);
+        gameOverMessage.setY(GamePlay.SCENE_HEIGHT / 2);
+        gameOverMessage.setStrokeWidth(3);
+        gameOverMessage.setStroke(Color.BLACK);
     }
 
     private void showCloseWindowMessage(Text closeWindowMessage) {
@@ -119,9 +136,5 @@ public class StatusDisplay {
 
     public Text getLevelCounter() {
         return levelCounter;
-    }
-
-
-    public void displayWinStatus(ObservableList<Node> gameElements) {
     }
 }
