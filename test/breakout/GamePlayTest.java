@@ -356,48 +356,6 @@ public class GamePlayTest extends DukeApplicationTest {
     }
 
     @Test
-    public void testPowerUpMove() throws FileNotFoundException {
-        press(myScene, KeyCode.Z);
-        press(myScene, KeyCode.P);
-
-        PowerUp powerUp = lookup("#powerUp").query();
-
-        double powerUpStartXPos = powerUp.getCenterX();
-        double powerUpStartYPos = powerUp.getCenterY();
-
-
-        mySceneCreation.update(GamePlay.SECOND_DELAY);
-
-
-
-
-        assertEquals(powerUp.getCenterX(), powerUpStartXPos);
-        assertEquals(true, powerUp.getCenterY() > powerUpStartYPos);
-
-    }
-
-    @Test
-    public void testPowerUpEffect() {
-        press(myScene, KeyCode.Z);
-        press(myScene, KeyCode.P);
-
-        PowerUp powerUp = lookup("#powerUp").query();
-
-        powerUp.setCenterX(myPaddleShape.getX());
-        powerUp.setCenterY(myPaddleShape.getY());
-
-        javafxRun(() -> {
-            try {
-                mySceneCreation.update(GamePlay.SECOND_DELAY);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-
-        assertEquals(90, myPaddleShape.getWidth());
-    }
-
-    @Test
     public void testStatusDisplayPosition() {
         press(myScene, KeyCode.Z);
         assertEquals(10, myLifeCounter.getX());

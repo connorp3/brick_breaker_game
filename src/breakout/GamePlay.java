@@ -33,6 +33,7 @@ public class GamePlay extends Application {
     private Text myInstructions;
     private StatusDisplay myStatusDisplay;
     private ArrayList<CollidableObject> myCollidables;
+    private ArrayList<PowerUp> myPowerUps;
     private ObservableList<Node> gameElements;
     private Paddle pTwoPaddle;
     private Ball pTwoBall;
@@ -89,6 +90,7 @@ public class GamePlay extends Application {
         myRoot = new Group();
         myCollidables = new ArrayList();
         gameElements = myRoot.getChildren();
+        myPowerUps = new ArrayList<>();
         myPaddle = new Paddle();
         gameElements.add(myPaddle.getRectangle());
         myCollidables.add(myPaddle);
@@ -184,7 +186,10 @@ public class GamePlay extends Application {
             newLevel(3);
         }
         if (code == KeyCode.P) {
-            initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
+            PowerUp powerUp = new PowerUp(myPaddle.getX() + myPaddle.getWidth()/2,
+                    myPaddle.getY() - 75, myPaddle, myStatusDisplay, myBall, gameElements);
+            myPowerUps.add(powerUp);
+            gameElements.add(powerUp.getShape());
         } else if (code == KeyCode.L) { // Add a life to the player's life count
             myStatusDisplay.changeLifeCounter(1);
         }
@@ -248,7 +253,11 @@ public class GamePlay extends Application {
                 } else if (block.equals("3")) {
                     newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
                     generateBlock(newBlock);
+                } else if (block.equals("4")) {
+                    newBlock = new PowerUpBlock(blockCounter, xPosNextBlock, yPosNextBlock, myPowerUps, myPaddle, myStatusDisplay, myBall, gameElements);
+                    generateBlock(newBlock);
                 }
+
                 xPosNextBlock += Block.WIDTH + X_BLOCK_GAP;
                 blockCounter += 1;
             }
@@ -275,6 +284,10 @@ public class GamePlay extends Application {
         myPaddle.update();
         myBall.update(elapsedTime);
 
+        for(PowerUp powerUp : myPowerUps) {
+            powerUp.update(elapsedTime);
+        }
+
         if(myBall.passBottomWall()) {
             myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
             myStatusDisplay.changeLifeCounter(-1);
@@ -288,9 +301,6 @@ public class GamePlay extends Application {
             myStatusDisplay.displayFinalStatus(gameElements, myAnimation, true);
         }
 
-        checkPowerUps(elapsedTime);
-        checkPowerUpPaddleInteraction();
-
         if(blockArrayList.isEmpty()) {
             currentLevel++;
             newLevel(currentLevel);
@@ -303,6 +313,7 @@ public class GamePlay extends Application {
             gameElements.remove(block.getRectangle());
             myCollidables.remove(block);
         }
+        myPowerUps.clear();
         blockArrayList.clear();
         if(currentLevel <= NUM_LEVELS) {
             initializeLevel(newLevel);
@@ -341,50 +352,27 @@ public class GamePlay extends Application {
                 collidableGameElement.collision(topHit);
             }
         }
+        ArrayList<CollidableObject> toRemove = new ArrayList<>();
+        for(CollidableObject powerUp : myPowerUps) {
 
-
-
-    }
-
-    private void generatePowerUpBlockCollision(Block block) {
-        Random rand = new Random();
-        int rand_int = rand.nextInt(3);
-        if (rand_int == 0) {
-            initializePowerUp(block.getX() + Block.WIDTH / 2, block.getY() + Block.HEIGHT);
-        }
-    }
-
-    private void initializePowerUp(double XPos, double YPos) {
-        PowerUp powerUp = new PowerUp(XPos, YPos);
-        myRoot.getChildren().add(powerUp);
-        powerUpArrayList.add(powerUp);
-    }
-
-
-    private void checkPowerUps(double elapsedTime) {
-        if(!powerUpArrayList.isEmpty()) {
-            for(PowerUp powerUp : powerUpArrayList) {
-                powerUp.moveDown(elapsedTime);
-            }
-        }
-    }
-
-    private void checkPowerUpPaddleInteraction() {
-        ArrayList<Shape> toRemove = new ArrayList<>();
-
-        for(PowerUp powerUp : powerUpArrayList) {
-            if(Shape.intersect(powerUp, myPaddle.getRectangle()).getBoundsInLocal().getHeight() != -1) {
-                powerUp.lengthenPaddle(myPaddle);
-                powerUp.eliminatePowerUp(myRoot);
+            if (CollidableObject.intersectsTop(myPaddle, powerUp)) {
+                powerUp.collision(topHit);
                 toRemove.add(powerUp);
             }
+
+            if (CollidableObject.intersectsSide(myPaddle, powerUp)) {
+                powerUp.collision(topHit);
+                myPowerUps.remove(powerUp);
+            }
+        }
+        for(CollidableObject powerUp : toRemove) {
+            myPowerUps.remove(powerUp);
         }
 
-        for (Shape powerUp : toRemove) {
-            powerUpArrayList.remove(powerUp);
-        }
+
 
     }
+
 
     public StatusDisplay getMyStatusDisplay() {
         return myStatusDisplay;

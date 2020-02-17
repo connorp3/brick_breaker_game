@@ -8,6 +8,8 @@ import java.util.Random;
 public class Ball extends CollidableObject {
     private double XVel;
     private double YVel;
+    private double XStartVel;
+    private double YStartVel;
     private Random rand = new Random();
     private static final double START_X_POS = 275;
     private static final double START_Y_POS = 424;
@@ -54,9 +56,9 @@ public class Ball extends CollidableObject {
         } else if (code == KeyCode.RIGHT && resetBall) {
             moveR = true;
         } else if (code == KeyCode.S) {
-            this.halfSpeed();  // Cut the overall speed of the ball in half //CGP19 created helper methods in ball class for these
+            this.changeSpeed(0.5);  // Cut the overall speed of the ball in half //CGP19 created helper methods in ball class for these
         } else if (code == KeyCode.F) {
-            this.doubleSpeed();
+            this.changeSpeed(2.0);
         }
     }
 
@@ -143,19 +145,18 @@ public class Ball extends CollidableObject {
     }
 
     //CGP19 Might be smart to combine these into one method that takes the speed increase as a parameter
-    public void doubleSpeed() {
-        XVel = 2*XVel;
-        YVel = 2*YVel;
+    public void changeSpeed(double multiplier) {
+        if (Math.abs(XVel) >= Math.abs(XStartVel) * 0.5 && Math.abs(XVel) <= Math.abs(XStartVel) * 2.0) {
+            XVel = multiplier * XVel;
+            YVel = multiplier * YVel;
+        }
     }
 
-    public void halfSpeed() {
-        XVel = 0.5*XVel;
-        YVel = 0.5*YVel;
-    }
 
     // The method called when the ball is "shot" by the user.
     public void shootBall() {
         XVel = getRandomInRange(-100, 100);
+        XStartVel = XVel;
         YVel = START_Y_VEL;
         resetBall = false;
     }

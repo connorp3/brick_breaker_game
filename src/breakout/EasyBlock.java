@@ -10,8 +10,9 @@ public class EasyBlock extends Block {
         super(whichOne, xPos, yPos, gameElements);
         this.getRectangle().setFill(Color.LIGHTSTEELBLUE);
         hitsLimit = 1;
-
     }
+
+
 
 
 
