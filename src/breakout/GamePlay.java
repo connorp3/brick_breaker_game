@@ -11,6 +11,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -26,6 +29,8 @@ public class GamePlay extends Application {
     private Group myRoot;
     private Paddle myPaddle;
     private Ball myBall;
+    private Text myTitle;
+    private Text myInstructions;
     private StatusDisplay myStatusDisplay;
     private ArrayList<CollidableObject> myCollidables;
     private Text lifeCounter;
@@ -39,9 +44,18 @@ public class GamePlay extends Application {
     private Timeline myAnimation;
     private ArrayList<PowerUp> powerUpArrayList;
     private int currentLevel;
+    private boolean removeOneBlock;
 
 
-
+    private static final Text LEVEL_TRANSITION = new Text();
+    private static final String INSTRUCTIONS_TEXT =  "Connor Penny & John Taylor \n" +
+                                                    "Press Z to start \n" +
+                                                    "Use Arrow Keys to move Paddle Left and Right \n" +
+                                                    "Press Up Arrow to shoot Ball \n" +
+                                                    "Press Space to Pause \n" +
+                                                    "Clear All Balls in Level to Advance \n" +
+                                                    "Catch PowerUps with the Paddle \n" +
+                                                    "Good Luck!";
     private static final int X_BLOCK_GAP = 2;
     private static final int Y_BLOCK_GAP = 2;
     private static final int STARTING_Y_BLOCK_POS = 50;
@@ -52,6 +66,7 @@ public class GamePlay extends Application {
     public static final double SECOND_DELAY = 1.0/FRAMES_PER_SECOND;
     public static final int BLOCK_VAL = 10;
     public static final int NUM_LIVES = 3;
+
 
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
@@ -90,6 +105,23 @@ public class GamePlay extends Application {
         gameElements.add(myStatusDisplay.getLevelCounter());
         gameElements.add(myStatusDisplay.getLifeCounter());
 
+        myTitle = new Text();
+        myTitle.setText("BREAKOUT");
+        myTitle.setX(GamePlay.SCENE_WIDTH / 2 - 200);
+        myTitle.setY(GamePlay.SCENE_HEIGHT/2 - 100);
+        myTitle.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 60));
+        myInstructions = new Text();
+        myInstructions.setText(INSTRUCTIONS_TEXT);
+        myInstructions.setX(GamePlay.SCENE_WIDTH / 2 - 200);
+        myInstructions.setY(myTitle.getY() + 50);
+        myInstructions.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+
+
+
+
+        gameElements.add(myTitle);
+        gameElements.add(myInstructions);
+
         currentLevel = 1;
         initializeLevel(currentLevel);
 
@@ -121,6 +153,27 @@ public class GamePlay extends Application {
           // Double the speed of the ball
         myPaddle.handleInput(code);
         myBall.handleInput(code, myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
+
+        if(code == KeyCode.D) {
+            gameElements.remove(blockArrayList.get(0).getShape());
+            myCollidables.remove(blockArrayList.get(0));
+            blockArrayList.remove(0);
+        }
+
+        if(code == KeyCode.Q) {
+            myStatusDisplay.resetStatusDisplay();
+            currentLevel = 1;
+            newLevel(1);
+
+        }
+        if(code == KeyCode.Z) {
+            for(Node x : gameElements) {
+                x.setVisible(true);
+            }
+            myTitle.setY(10000);
+            myInstructions.setY(10000);
+            gameElements.remove(LEVEL_TRANSITION);
+        }
         if(code == KeyCode.DIGIT1) {
             currentLevel = 1;
             newLevel(1);
@@ -164,6 +217,12 @@ public class GamePlay extends Application {
         initializeBlocks(level);
         myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
         powerUpArrayList = new ArrayList<>();
+        LEVEL_TRANSITION.setText("PRESS Z TO CONTINUE");
+        LEVEL_TRANSITION.setX(GamePlay.SCENE_WIDTH / 2);
+        LEVEL_TRANSITION.setY(GamePlay.SCENE_HEIGHT/2 + 200);
+        LEVEL_TRANSITION.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        gameElements.add(LEVEL_TRANSITION);
+
     }
 
     // Arrange the blocks based on the given configuration file
@@ -209,7 +268,7 @@ public class GamePlay extends Application {
      */
     public void update(double elapsedTime) throws FileNotFoundException {
         //CGP19 Split these methods up even more. Separated out interactions between game nodes.
-
+        removeOneBlock = false;
         updateCollisions();
         removeBlocks();
         myPaddle.update();
@@ -217,7 +276,7 @@ public class GamePlay extends Application {
 
         if(myBall.passBottomWall()) {
             myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
-            myStatusDisplay.subtractLifeCounter(myBall);
+            myStatusDisplay.changeLifeCounter(-1);
         }
         myBall.updateResetBall(!myPaddle.lWallReached(), !myPaddle.rWallReached());
 
@@ -257,6 +316,7 @@ public class GamePlay extends Application {
             blockArrayList.remove(block);
         }
     }
+
     private void updateCollisions() {
         boolean topHit = false;
 

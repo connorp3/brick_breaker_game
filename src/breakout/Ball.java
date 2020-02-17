@@ -28,6 +28,7 @@ public class Ball extends CollidableObject {
         myCircle.setRadius(RADIUS);
         myCircle.setFill(Color.GOLD);
         myCircle.setStroke(Color.BLACK);
+        myCircle.setVisible(false);
         XVel = 0;
         YVel = 0;
         stuckToPaddle = false;

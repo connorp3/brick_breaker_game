@@ -29,7 +29,7 @@ class Block extends CollidableObject {
     public Block(int whichOne, int xPos, int yPos) {
         super();
         myRectangle = new Rectangle();
-        
+        myRectangle.setVisible(false);
         myRectangle.setWidth(WIDTH);
         myRectangle.setHeight(HEIGHT);
         myRectangle.setX(xPos);
@@ -66,6 +66,10 @@ class Block extends CollidableObject {
         return hits;
     }
 
+    public void setHits(int num) {
+        hits = num;
+    }
+
     //Removes block from game
     public void eliminateBlock() {
         hits++;
@@ -74,9 +78,8 @@ class Block extends CollidableObject {
                 myRectangle.setFill(Color.LIGHTSKYBLUE);
             } else if (hitsLimit - hits == 1) {
                 myRectangle.setFill(Color.LIGHTSTEELBLUE);
-            } else if(hits == hitsLimit) {
+            } else if(hits >= hitsLimit) {
                 myRectangle.setVisible(false);
-
             }
     }
 

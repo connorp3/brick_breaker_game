@@ -27,6 +27,7 @@ public class Paddle extends CollidableObject {
         myRectangle.setFill(Color.RED);
         myRectangle.setStroke(Color.BLACK);
         myRectangle.setId("paddle");
+        myRectangle.setVisible(false);
 
         moveR = false;
         moveL = false;

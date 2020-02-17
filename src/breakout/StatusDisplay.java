@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 public class StatusDisplay {
     private int myScore;
     private int numLives;
+    private int maxLives;
     private int currentLevel;
     private Text lifeCounter;
     private Text scoreDisplay;
@@ -21,6 +22,7 @@ public class StatusDisplay {
     public static final int BLOCK_VAL = 10;
 
     public StatusDisplay(int lives) {
+        maxLives = lives;
         numLives = lives;
         lifeCounter = createStatusPiece("Lives Remaining: ", numLives, 10, "lifeCounter");
         myScore = 0;
@@ -40,19 +42,22 @@ public class StatusDisplay {
         statusPiece.setY(20);
         setTextFont(statusPiece, "verdana", STATUS_DISPLAY_SIZE);
         statusPiece.setText(message + count);
+        statusPiece.setVisible(false);
         statusPiece.setId(id);
         return statusPiece;
     }
 
-    public void subtractLifeCounter(Ball ball) {
-        numLives = numLives-1;
+    public void resetStatusDisplay() {
+        changeLifeCounter(maxLives-numLives);
+        updateLevelDisplay(1);
+        updateScoreDisplay(0);
+    }
+
+    public void changeLifeCounter(int amount) {
+        numLives = numLives + amount;
         lifeCounter.setText("Lives Remaining: " + numLives);
     }
 
-    public void addLifeCounter() {
-        numLives = numLives+1;
-        lifeCounter.setText("Lives Remaining: " + numLives);
-    }
 
     public void updateScoreDisplay(int amount) {
         myScore += amount;
