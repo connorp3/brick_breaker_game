@@ -51,7 +51,7 @@ Cheat keys:
 - ```R``` - Reset the ball to its initial position on the paddle.
 - ```L``` - Add extra lives to the player.
 - ```F``` - Make the ball move 2x faster.
-- ```S``` - Make the ball move 2x slower.
+- ```S``` - Make the ball move 0.5x as fast.
 - ```Q``` - Clear all blocks on the screen.
 - ```D``` - Destroy the top-most, left-most block on the screen.
 - ```P``` - Create a power-up that immediately drops to the paddle.
@@ -85,6 +85,12 @@ Levels:
 - ```Level 2```: This level is harder because it mixes in medium and hard blocks, and the paddle is smaller.
 - ```Level 3```: This level is much harder because there are many medium and hard blocks, and the paddle is significantly
 smaller than in Level 1.
+
+Assumptions:
+
+- PowerUps remain until the level is changed
+- Ball should bounce the same off of Blocks as it does off of Paddles
+- PowerUp should be dropped by a specific Block subclass
 
 ---
 ### Impressions
