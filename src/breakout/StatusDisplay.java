@@ -51,7 +51,7 @@ public class StatusDisplay {
     public void resetStatusDisplay() {
         changeLifeCounter(maxLives-numLives);
         updateLevelDisplay(1);
-        updateScoreDisplay(0);
+        updateScoreDisplay(myScore*-1);
     }
 
     public void changeLifeCounter(int amount) {
@@ -107,6 +107,8 @@ public class StatusDisplay {
 
     public int getMyScore() {return myScore;}
 
+    public int getCurrentLevel() {return currentLevel;}
+
     public Text getScoreDisplay() {
         return scoreDisplay;
     }
@@ -118,6 +120,7 @@ public class StatusDisplay {
     public Text getLevelCounter() {
         return levelCounter;
     }
+
 
     public void displayWinStatus(ObservableList<Node> gameElements) {
     }

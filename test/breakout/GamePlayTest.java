@@ -294,7 +294,7 @@ public class GamePlayTest extends DukeApplicationTest {
         sleep(1, TimeUnit.SECONDS);
 
         assertEquals(startNumBlocks, mySceneCreation.getBlockArrayListSize());
-        assertEquals(true, keyBlock11.isVisible());
+        assertEquals(true, mySceneCreation.getGameElements().contains(keyBlock11));
     }
 
     @Test
@@ -344,7 +344,7 @@ public class GamePlayTest extends DukeApplicationTest {
         sleep(1, TimeUnit.SECONDS);
 
         assertEquals(startNumBlocks, mySceneCreation.getBlockArrayListSize());
-        assertEquals(true, keyBlock1.isVisible());
+        assertEquals(true, mySceneCreation.getGameElements().contains(keyBlock1));
     }
 
     private void setBallOnBlock(Rectangle block) {
@@ -490,7 +490,52 @@ public class GamePlayTest extends DukeApplicationTest {
         assertTrue(mySceneCreation.getBlockArrayList().get(40) instanceof EasyBlock);
     }
 
-    // NEED TO ADD: testRestartGame, testDKeyPress, testTitleScreen, 
+    @Test
+    public void testCheatKeyQ() {
+        press(myScene, KeyCode.Z);
+        press(myScene, KeyCode.DIGIT3);
+        press(myScene, KeyCode.Z);
+        press(myScene, KeyCode.Q);
+        press(myScene, KeyCode.Z);
+
+
+        javafxRun(() -> {
+            try {
+                mySceneCreation.update(GamePlay.SECOND_DELAY);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        assertEquals(0, myStatusDisplay.getMyScore());
+        assertEquals(3, myStatusDisplay.getNumLives());
+        assertEquals(1, myStatusDisplay.getCurrentLevel());
+
+    }
+
+    @Test
+    public void testCheatKeyD() {
+        press(myScene, KeyCode.Z);
+        press(myScene, KeyCode.DIGIT2);
+        press(myScene, KeyCode.Z);
+        Rectangle keyBlock1 = lookup("#block_1").query();
+        press(myScene, KeyCode.D);
+        Rectangle keyBlock2 = lookup("#block_2").query();
+        press(myScene, KeyCode.D);
+
+
+        javafxRun(() -> {
+            try {
+                mySceneCreation.update(GamePlay.SECOND_DELAY);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        assertEquals(false, mySceneCreation.getGameElements().contains(keyBlock1));
+        assertEquals(false, mySceneCreation.getGameElements().contains(keyBlock2));
+    }
+    
 }
 
 

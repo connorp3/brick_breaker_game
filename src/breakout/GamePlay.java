@@ -33,10 +33,6 @@ public class GamePlay extends Application {
     private Text myInstructions;
     private StatusDisplay myStatusDisplay;
     private ArrayList<CollidableObject> myCollidables;
-    private Text lifeCounter;
-    private int numLives;
-    private Text myScoreDisplay;
-    private Text levelCounter;
     private ObservableList<Node> gameElements;
     private Paddle pTwoPaddle;
     private Ball pTwoBall;
@@ -117,7 +113,7 @@ public class GamePlay extends Application {
         myInstructions.setText(INSTRUCTIONS_TEXT);
         myInstructions.setX(GamePlay.SCENE_WIDTH / 2 - 200);
         myInstructions.setY(myTitle.getY() + 50);
-        myInstructions.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
+        myInstructions.setFont(Font.font("verdana", FontWeight.LIGHT, FontPosture.REGULAR, 15));
         gameElements.add(myTitle);
         gameElements.add(myInstructions);
 
@@ -190,7 +186,7 @@ public class GamePlay extends Application {
         if (code == KeyCode.P) {
             initializePowerUp(myPaddle.getX() + myPaddle.getWidth()/2, myPaddle.getY() + 75);
         } else if (code == KeyCode.L) { // Add a life to the player's life count
-            numLives += 1;
+            myStatusDisplay.changeLifeCounter(1);
         }
         // pause/restart animation
         if (code == KeyCode.SPACE) {
@@ -302,7 +298,7 @@ public class GamePlay extends Application {
     }
 
     private void newLevel(int newLevel) throws FileNotFoundException {
-        myPaddle.changeWidth(0.85/ (newLevel-1));
+        myPaddle.changeWidth(1.0 / newLevel);
         for(Block block : blockArrayList) {
             gameElements.remove(block.getRectangle());
             myCollidables.remove(block);
@@ -349,29 +345,6 @@ public class GamePlay extends Application {
 
 
     }
-
-    //Remove node from myRoot and bounce ball if it is a block and the ball hits the block
-    /*private void checkBallBlockInteraction() {
-        // Create new list to keep track of blocks to remove from blockArrayList
-        ArrayList<Shape> toRemove = new ArrayList<>();
-
-        // If a block is hit, remove it from the myRoot group and add it to the toRemove list
-        for (Shape block : blockArrayList) {
-            BallBlockCollision ballBlockCollision = new BallBlockCollision(myBall, block, myRoot);
-            ballBlockCollision.collision();
-
-            if (block.isBlockDestroyed()) {
-                toRemove.add(block);
-                generatePowerUpBlockCollision(block);
-            }
-        }
-
-        // Remove eliminated blocks from blockArrayList
-        for (Shape eliminatedBlock : toRemove) {
-            blockArrayList.remove(eliminatedBlock);
-            myStatusDisplay.updateScoreDisplay(BLOCK_VAL);
-        }
-    }*/
 
     private void generatePowerUpBlockCollision(Block block) {
         Random rand = new Random();
