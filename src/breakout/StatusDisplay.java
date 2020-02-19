@@ -12,7 +12,7 @@ import javafx.scene.text.Text;
 /**
  * This class handles the status display at the top of the game screen. It keeps track of the current level, the
  * current score, and the number of lives the player has left. These values are all updated within this class by
- * external calls from other classes.
+ * external calls from the GamePlay class.
  *
  * @author cgp19, jmt86
  */
@@ -28,6 +28,10 @@ public class StatusDisplay {
     private Text closeWindowMessage;
 
     public static final int STATUS_DISPLAY_SIZE = 10;
+
+    /**Constructs a Status display with three different text pieces for number of lives, score, and level. StatusDisplay also
+     * holds the values for these text pieces as integer instance variables
+     * @param lives the number of lives the game is set to give the player*/
 
     public StatusDisplay(int lives) {
         maxLives = lives;
@@ -55,29 +59,33 @@ public class StatusDisplay {
         return statusPiece;
     }
 
+    /**Set status display to score of 0, level 1, and default number of lives*/
     public void resetStatusDisplay() {
         changeLifeCounter(maxLives-numLives);
         updateLevelDisplay(1);
         updateScoreDisplay(myScore*-1);
     }
-
+    /** Change life counter in life display when cheat key is pressed or when ball passes bottom wall*/
     public void changeLifeCounter(int amount) {
         numLives = numLives + amount;
         lifeCounter.setText("Lives Remaining: " + numLives);
     }
 
-
+    /**Change score in score display when block is hit or power-up is obtained*/
     public void updateScoreDisplay(int amount) {
         myScore += amount;
         scoreDisplay.setText("Score: " + myScore);
     }
-
+    /**Change level in level display when all blocks are cleared or a cheat key is pressed*/
     public void updateLevelDisplay(int level) {
         currentLevel = level;
         levelCounter.setText("Level: " + currentLevel);
 
     }
-
+    /**Displays a message when the game ends indicating whether player won or lost
+     * @param gameElements a list of the elements in the scene. This allows the method to add the game over message to the scene
+     * @param myAnimation the animation timeline of the scene. This allows the method to stop the animation when the game is over
+     * @param win a boolean to indicate whether the game was won or lost*/
     public void displayFinalStatus(ObservableList<Node> gameElements, Timeline myAnimation, boolean win) {
         gameOverMessage = new Text();
         createGameOverMessage();
@@ -118,22 +126,28 @@ public class StatusDisplay {
         closeWindowMessage.setText("Close window to restart.");
     }
 
+    /**Returns number of lives player has in status display*/
     public int getNumLives() {
         return numLives;
     }
 
+    /**Returns score player has in status display*/
     public int getMyScore() {return myScore;}
 
+    /**Returns the current level of the game*/
     public int getCurrentLevel() {return currentLevel;}
 
+    /**Returns the text for the score display. Used to add the text to the game elements list in GamePlay*/
     public Text getScoreDisplay() {
         return scoreDisplay;
     }
 
+    /**Returns the text for the life display. Used to add the text to the game elements list in GamePlay*/
     public Text getLifeCounter() {
         return lifeCounter;
     }
 
+    /**Returns the text for the level display. Used to add the text to the game elements list in GamePlay*/
     public Text getLevelCounter() {
         return levelCounter;
     }

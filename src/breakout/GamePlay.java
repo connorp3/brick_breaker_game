@@ -38,7 +38,6 @@ public class GamePlay extends Application {
     private ObservableList<Node> gameElements;
     private ArrayList<Block> blockArrayList;
     private Timeline myAnimation;
-    private ArrayList<PowerUp> powerUpArrayList;
     private int currentLevel;
     private boolean removeOneBlock;
 
@@ -64,6 +63,8 @@ public class GamePlay extends Application {
     public static final int NUM_LEVELS = 3;
 
 
+    /**An overridden method from the Application class for JavaFX. This takes a stage as a parameter and creates a Scene
+     * and Animation timeline to display in the stage. Uses the createScene method to create the appropriate Breakout scene.*/
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
         createScene();
@@ -85,6 +86,11 @@ public class GamePlay extends Application {
         myAnimation.play();
     }
 
+    /**Creates the Breakout Scene. This adds the respective Shapes of Paddle and Ball as nodes to the root of the scene. It also
+     * adds the different Text objects in StatusDisplay to the root of the scene. It creates an ArrayList of CollidableObject objects
+     * to be used in updating collisions. It also creates an ArrayList of PowerUp objects to use when updating collisions. It initializes the
+     * first level's block configuration, and it displays a Title and Instructions text.
+     * @return myScene returns the scene it creates for GamePlayTest to function properly*/
     public Scene createScene() throws FileNotFoundException {
         myRoot = new Group();
         myCollidables = new ArrayList();
@@ -133,14 +139,75 @@ public class GamePlay extends Application {
         return myScene;
     }
 
+    private void initializeLevel(int level) throws FileNotFoundException {
+        initializeBlocks(level);
+        myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
+        showTransitionMessage();
+
+    }
+
+    // Reads the file of blocks in the data directory and adds the Rectangle object contained in a Block object to the game elements. Also
+    //adds the Block objects themselves to blockArrayList instance variable so that proper methods can be called on the blocks in the scene.
+    private void initializeBlocks(int level) {
+        InputStream levelFile = getClass().getClassLoader().getResourceAsStream("\\level" + level + ".txt");
+        Scanner input = new Scanner(levelFile);
+
+        int yPosNextBlock = STARTING_Y_BLOCK_POS;
+        int blockCounter = 1;
+        blockArrayList = new ArrayList<Block>();
+        while (input.hasNextLine()) {
+            String[] blockList = input.nextLine().split(" ");
+            int xPosNextBlock = STARTING_X_BLOCK_POS;
+            for(String block : blockList) { //jmt86 - Determines which number is read and adds corresponding block
+                Block newBlock;
+                if (block.equals("1")) {
+                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
+                    generateBlock(newBlock);
+                } else if (block.equals("2")) {
+                    newBlock = new MediumBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
+                    generateBlock(newBlock);
+                } else if (block.equals("3")) {
+                    newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
+                    generateBlock(newBlock);
+                } else if (block.equals("4")) {
+                    newBlock = new PowerUpBlock(blockCounter, xPosNextBlock, yPosNextBlock, myPowerUps, myPaddle, myStatusDisplay, myBall, gameElements);
+                    generateBlock(newBlock);
+                }
+
+                xPosNextBlock += Block.WIDTH + X_BLOCK_GAP;
+                blockCounter += 1;
+            }
+            yPosNextBlock += Block.HEIGHT + Y_BLOCK_GAP;
+        }
+    }
+
+    private void generateBlock(Block newBlock) {
+        blockArrayList.add(newBlock);
+        gameElements.add(newBlock.getRectangle());
+        myCollidables.add(newBlock);
+    }
+
+
+
+    /**Returns the Ball instance variable that exists as a node in myScene. Used exclusively for testing.*/
     public Ball getBall() {
         return myBall;
     }
 
+    /**Returns the instance variable that is a list of game element nodes in myScene. Used for testing.*/
     public ObservableList<Node> getGameElements() {return gameElements;}
 
+    /**Returns the instance variable ArrayList of Block objects nodes in myScene. Used for testing*/
     public ArrayList<Block> getBlockArrayList() {return blockArrayList;}
 
+    /**Returns the StatusDisplay object that is an instance variable of this class. Used for testing*/
+    public StatusDisplay getMyStatusDisplay() {
+        return myStatusDisplay;
+    }
+
+    /**Calls methods of nodes in the scene to handle appropriate key inputs for those Objects. Also handles
+     * key input for actions specific to the game scene, such as changing levels, transitioning out of splash screen,
+     * creating a powerUp, and pausing*/
     private void handleInput (KeyCode code) throws FileNotFoundException {
 
         myPaddle.handleInput(code);
@@ -196,19 +263,9 @@ public class GamePlay extends Application {
             }
         }
     }
-
+    /**Returns the number of Blocks in the scene. Used for testing*/
     public int getBlockArrayListSize() {
         return blockArrayList.size();
-    }
-
-
-
-    private void initializeLevel(int level) throws FileNotFoundException {
-        initializeBlocks(level);
-        myBall.ballReset(myPaddle.getX(), myPaddle.getY(), myPaddle.getWidth());
-        powerUpArrayList = new ArrayList<>();
-        showTransitionMessage();
-
     }
 
     private void showTransitionMessage() {
@@ -219,53 +276,13 @@ public class GamePlay extends Application {
         gameElements.add(LEVEL_TRANSITION);
     }
 
-    // Arrange the blocks based on the given configuration file
-    private void initializeBlocks(int level) {
-        InputStream levelFile = getClass().getClassLoader().getResourceAsStream("\\level" + level + ".txt");
-        Scanner input = new Scanner(levelFile);
-
-        int yPosNextBlock = STARTING_Y_BLOCK_POS;
-        int blockCounter = 1;
-        blockArrayList = new ArrayList<Block>();  //I changed the way the ball block interaction method worked, so this list isn't actually used when removing blocks
-        while (input.hasNextLine()) {
-            String[] blockList = input.nextLine().split(" ");
-            int xPosNextBlock = STARTING_X_BLOCK_POS;
-            for(String block : blockList) { //jmt86 - Determines which number is read and adds corresponding block
-                Block newBlock;
-                if (block.equals("1")) {
-                    newBlock = new EasyBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
-                    generateBlock(newBlock);
-                } else if (block.equals("2")) {
-                    newBlock = new MediumBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
-                    generateBlock(newBlock);
-                } else if (block.equals("3")) {
-                    newBlock = new HardBlock(blockCounter, xPosNextBlock, yPosNextBlock, gameElements);
-                    generateBlock(newBlock);
-                } else if (block.equals("4")) {
-                    newBlock = new PowerUpBlock(blockCounter, xPosNextBlock, yPosNextBlock, myPowerUps, myPaddle, myStatusDisplay, myBall, gameElements);
-                    generateBlock(newBlock);
-                }
-
-                xPosNextBlock += Block.WIDTH + X_BLOCK_GAP;
-                blockCounter += 1;
-            }
-            yPosNextBlock += Block.HEIGHT + Y_BLOCK_GAP;
-        }
-    }
-
-    private void generateBlock(Block newBlock) {
-        blockArrayList.add(newBlock);
-        gameElements.add(newBlock.getRectangle());
-        myCollidables.add(newBlock);
-    }
-
-
     /**
-     * This is the game loop
+     * This method is responsible for updating the elements of the scene for each frame of the game. It the update method for
+     * several instance variables (game elements) in the scene. It also handles some updates that involve multiple game elements
+     * itself.
      * @param elapsedTime
      */
     public void update(double elapsedTime) throws FileNotFoundException {
-        removeOneBlock = false;
         updateCollisions();
         removeBlocks();
         myPaddle.update();
@@ -358,10 +375,5 @@ public class GamePlay extends Application {
 
 
 
-    }
-
-
-    public StatusDisplay getMyStatusDisplay() {
-        return myStatusDisplay;
     }
 }

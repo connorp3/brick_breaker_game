@@ -20,6 +20,10 @@ public class PowerUp extends CollidableObject{
     public StatusDisplay myStatusDisplay;
     public ObservableList<Node> myGameElements;
 
+    /**Constructs a PowerUp with a circle object and default position, size and color attributes. Takes several game elements as parameters and keeps them
+     * as instance variables so that it can perform necessary functions as a power-up on these game elements in the collision method.
+     * Sets the shape of PowerUp as a collidable object.
+     * */
     public PowerUp(double centerX, double centerY, Paddle paddle, StatusDisplay statusDisplay, Ball ball, ObservableList<Node> gameElements) {
         super();
         myCircle = new Circle();
