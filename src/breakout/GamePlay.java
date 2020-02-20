@@ -39,7 +39,6 @@ public class GamePlay extends Application {
     private ArrayList<Block> blockArrayList;
     private Timeline myAnimation;
     private int currentLevel;
-    private boolean removeOneBlock;
 
 
     private static final Text LEVEL_TRANSITION = new Text();
