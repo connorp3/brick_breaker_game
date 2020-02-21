@@ -21,6 +21,15 @@ class Block extends CollidableObject {
     protected int hitsLimit;
     protected ObservableList<Node> myGameElements;
 
+    /**
+     * This constructor takes in the variables below and sets their position so they can be added on the screen.
+     * The protected variables above allow the blocks to be uniform in size, but allow the hitsLimit to differ
+     * for different blocks so that there can be EasyBlocks, MediumBlocks, HardBlocks, and PowerUp blocks.
+     * @param whichOne tells the game elements list which block this is
+     * @param xPos sets the x position of the block on the scene
+     * @param yPos sets the y position of the block on the scene
+     * @param gameElements The list of all elements of the game
+     */
     public Block(int whichOne, int xPos, int yPos, ObservableList<Node> gameElements) {
         super();
         myRectangle = new Rectangle();
@@ -38,27 +47,45 @@ class Block extends CollidableObject {
 
     }
 
-    // Return the shape of the block
+    /**
+     * This method returns the rectangle shape that the block is built on. It is used to add the object to
+     * the game elements.
+     * @return myRectangle, the shape of the block
+     */
     public Rectangle getRectangle() {
         return myRectangle;
     }
 
-    // Return the X position of the block
+    /**
+     * This method returns the x position of the block within the scene
+     * @return the x position of the block
+     */
     public double getX() {
         return myRectangle.getX();
     }
 
-    // Return the y position of the block
+    /**
+     * This method returns the y position of the block within the scene
+     * @return the y position of the block
+     */
     public double getY() {
         return myRectangle.getY();
     }
 
-    // Return the number of hits the block has taken
+    /**
+     * This method returns the number of hits that the block has already taken
+     * @return the number of hits the block has taken
+     */
     public int getHits() {
         return hits;
     }
 
-    //Removes block from game
+    /**
+     * This method removes the block from the game, or changes the color of the block based on hits.
+     * It compares the number of hits it has taken to the limit on the number of hits the block
+     * can take to determine if the color of the block should change, or if the block should
+     * be eliminated completely.
+     */
     public void eliminateBlock() {
         hits++;
 
@@ -71,11 +98,19 @@ class Block extends CollidableObject {
             }
     }
 
-    // Return the hit limit of the block based on what type it is
+    /**
+     * This method returns the hit limit for the block (the number of hits it can take before it is destroyed)
+     * @return the hitsLimit value for the block
+     */
     public int getHitLimit() {
         return hitsLimit;
     }
 
+    /**
+     * this method calls the eliminateBlock method with the boolean topHit to determine if a hit should be
+     * taken away from the block or if the block should be removed completely.
+     * @param topHit a variable determining if the ball has collided with the block
+     */
     @Override
     public void collision(boolean topHit) {
         this.eliminateBlock();

@@ -8,7 +8,8 @@ import javafx.scene.shape.Shape;
  * (paddle and ball, paddle and block, paddle and powerup). Using this method, lists of objects that will collide can be easily
  * looped over and compared using the static methods in this class. This has a Shape object instance variable to allow for the use
  * of intersectSide and intersectTop between any two gameElements, no matter the specific Shape object they contain.
- * @author cgp19, jmt86*/
+ * @author cgp19, jmt86
+ */
 
 public abstract class CollidableObject {
     Shape myShape;

@@ -61,12 +61,8 @@ public class PowerUp extends CollidableObject{
         else if(rand_int == 1) {
             myBall.changeSpeed(0.5);
         }
-
         else if(rand_int == 2) {
             myStatusDisplay.updateScoreDisplay(50);
         }
-
-
     }
-
 }
